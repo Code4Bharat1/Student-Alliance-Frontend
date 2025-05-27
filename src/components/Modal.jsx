@@ -1,29 +1,91 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion"; // Animation library for smooth effects
+import { motion } from "framer-motion";
 
 export default function Modal({ product, onClose, onSave }) {
   const [formData, setFormData] = useState(
-    product || { name: "", price: "", description: "", image: null }
+    product || { name: "", price: "", description: "", image: "" }
   );
+  const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file); // Convert file to a URL
-      setFormData({ ...formData, image: imageUrl });
+    if (!file) return;
+
+    const formDataUpload = new FormData();
+    formDataUpload.append("file", file);
+    formDataUpload.append("upload_preset", "Student-Alliance");
+
+    setUploading(true);
+    try {
+      const res = await fetch(
+        "https://api.cloudinary.com/v1_1/dlgksnq6u/image/upload",
+        {
+          method: "POST",
+          body: formDataUpload,
+        }
+      );
+
+      const data = await res.json();
+      if (data.secure_url) {
+        setFormData((prev) => ({
+          ...prev,
+          image: data.secure_url,
+        }));
+      }
+      return data.secure_url;
+    } catch (error) {
+      console.error("Image upload failed:", error);
+    } finally {
+      setUploading(false);
     }
   };
 
-  const handleSubmit = () => {
-    onSave(formData);
-    onClose();
+  const handleSubmit = async () => {
+    if (uploading) {
+      alert("Please wait until image upload is complete.");
+      return;
+    }
+
+    if (!formData.image) {
+      alert("Please upload an image before saving.");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const response = await fetch("http://localhost:5000/api/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      console.log(formData) 
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("Product saved:", result);
+        onSave(result);
+        onClose();
+      } else {
+        console.error("Save failed:", result.message);
+        alert("Failed to save product: " + result.message);
+      }
+    } catch (error) {
+      console.error("Error saving product:", error);
+      alert("An unexpected error occurred.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -89,20 +151,6 @@ export default function Modal({ product, onClose, onSave }) {
             <label className="block text-gray-700 font-medium mb-1">
               Product Image
             </label>
-            <input
-              type="String"
-              name="price"
-              placeholder="Link of the Product Image"
-              value={formData.price}
-              onChange={handleChange}
-              className="w-full border border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2 transition"
-            />
-          </div>
-
-          {/* <div>
-            <label className="block text-gray-700 font-medium mb-1">
-              Product Image
-            </label>
             <div className="border border-dashed border-gray-300 rounded-lg p-4 text-center relative hover:shadow-md transition">
               <input
                 type="file"
@@ -110,7 +158,9 @@ export default function Modal({ product, onClose, onSave }) {
                 onChange={handleImageUpload}
                 className="absolute inset-0 opacity-0 cursor-pointer"
               />
-              {formData.image ? (
+              {uploading ? (
+                <p className="text-blue-500">Uploading...</p>
+              ) : formData.image ? (
                 <img
                   src={formData.image}
                   alt="Selected"
@@ -120,7 +170,7 @@ export default function Modal({ product, onClose, onSave }) {
                 <p className="text-blue-500">Click to choose an image</p>
               )}
             </div>
-          </div> */}
+          </div>
         </div>
 
         {/* Buttons */}
@@ -134,8 +184,9 @@ export default function Modal({ product, onClose, onSave }) {
           <button
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
             onClick={handleSubmit}
+            disabled={uploading || saving}
           >
-            Save
+            {uploading || saving ? "Saving..." : "Save"}
           </button>
         </div>
       </motion.div>
