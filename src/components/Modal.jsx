@@ -54,10 +54,15 @@ export default function Modal({ product, onClose, onSave }) {
       return;
     }
 
-    if (!formData.image) {
-      alert("Please upload an image before saving.");
+    if (!formData.name || !formData.price || !formData.image) {
+      alert("Please fill in all required fields: name, price, and image.");
       return;
     }
+
+    const payload = {
+      ...formData,
+      price: Number(formData.price), // Convert price to number
+    };
 
     setSaving(true);
     try {
@@ -66,10 +71,10 @@ export default function Modal({ product, onClose, onSave }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
-      console.log(formData) 
+      console.log(payload);
       const result = await response.json();
 
       if (response.ok) {
@@ -87,6 +92,8 @@ export default function Modal({ product, onClose, onSave }) {
       setSaving(false);
     }
   };
+  
+  
 
   return (
     <div className="fixed inset-0 border-gray-700 text-black bg-gradient-to-r from-blue-500 to-pink-500 bg-opacity-80 flex items-center justify-center z-50">
