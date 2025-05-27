@@ -1,4 +1,3 @@
-// components/ProductTable.jsx
 "use client";
 
 import {
@@ -22,6 +21,10 @@ export default function ProductTable({ onEdit }) {
         const res = await axios.get("http://localhost:5000/api/products");
         setProducts(res.data);
         if (!res.data || res.data.length === 0) {
+          console.warn("No products found in the database.");
+        }
+
+        if (FormData.length === 0) {
           console.warn("No products found in the database.");
         }
       } catch (error) {
