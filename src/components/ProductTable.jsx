@@ -21,6 +21,9 @@ export default function ProductTable({ onEdit }) {
       try {
         const res = await axios.get("http://localhost:5000/api/products");
         setProducts(res.data);
+        if (!res.data || res.data.length === 0) {
+          console.warn("No products found in the database.");
+        }
       } catch (error) {
         console.error("Failed to fetch products:", error);
       } finally {
@@ -34,9 +37,7 @@ export default function ProductTable({ onEdit }) {
   const handleDelete = async (id) => {
     const productToDelete = products.find((p) => p._id === id);
     try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`, {
-        data: { public_id: productToDelete.public_id }, // Sending public_id to backend
-      });
+      await axios.delete(`http://localhost:5000/api/products/${id}`);
       setProducts((prev) => prev.filter((p) => p._id !== id));
     } catch (error) {
       console.error("Delete failed:", error);
