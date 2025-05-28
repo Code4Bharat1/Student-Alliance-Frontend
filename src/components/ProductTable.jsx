@@ -1,6 +1,10 @@
 "use client";
 
-import {TrashIcon,PencilIcon,ArrowPathIcon,} from "@heroicons/react/24/solid";
+import {
+  TrashIcon,
+  PencilIcon,
+  ArrowPathIcon,
+} from "@heroicons/react/24/solid";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -38,20 +42,21 @@ export default function ProductTable({ onEdit }) {
     return () => {
       window.removeEventListener("productAdded", handleProductAdded);
     };
-
   }, []);
 
-      const handleDelete = async (id) => {
-        const productToDelete = products.find((p) => p._id === id);
-        try {
-          await axios.delete(`http://localhost:5000/api/products/${productToDelete._id}`);
-          setProducts((prev) => prev.filter((p) => p._id !== id));
-        } catch (error) {
-          console.error("Delete failed:", error);
-        } finally {
-          setConfirmDeleteId(null);
-        }
-      };
+  const handleDelete = async (id) => {
+    const productToDelete = products.find((p) => p._id === id);
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/products/${productToDelete._id}`
+      );
+      setProducts((prev) => prev.filter((p) => p._id !== id));
+    } catch (error) {
+      console.error("Delete failed:", error);
+    } finally {
+      setConfirmDeleteId(null);
+    }
+  };
 
   const handleDeleteClick = (id) => setConfirmDeleteId(id);
   const handleConfirmDelete = () =>
@@ -129,6 +134,9 @@ export default function ProductTable({ onEdit }) {
               <th className="px-6 py-4 text-left text-sm font-semibold text-blue-600 uppercase tracking-wider">
                 Price
               </th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-blue-600 uppercase tracking-wider">
+                Quantity
+              </th>
               <th className="px-6 py-4 text-right text-sm font-semibold text-blue-600 uppercase tracking-wider">
                 Actions
               </th>
@@ -185,6 +193,9 @@ export default function ProductTable({ onEdit }) {
                     <span className="px-3 py-1 inline-flex text-sm font-semibold rounded-full bg-green-100 text-green-800">
                       ₹{product.price.toLocaleString()}
                     </span>
+                  </td>
+                  <td className="px-6 py-4 text-black">
+                    {product.quantity.toLocaleString()}
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end space-x-3">

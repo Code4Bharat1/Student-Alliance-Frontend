@@ -66,9 +66,10 @@ export default function Modal({ product, onClose, onSave }) {
             additionalImages: updatedImages
           }));
         } else {
-          setFormData(prev => ({
+          setFormData((prev) => ({
             ...prev,
             image: data.secure_url,
+            imagePublicId: data.public_id,
           }));
         }
       }
@@ -120,7 +121,8 @@ export default function Modal({ product, onClose, onSave }) {
       rating: Number(formData.rating),
       quantity: Number(formData.quantity),
       discount: Number(formData.discount),
-      stocks: Number(formData.stocks)
+      stocks: Number(formData.stocks),
+      imagePublicId: formData.imagePublicId
     };
 
     console.log("Submitting payload:", payload);
