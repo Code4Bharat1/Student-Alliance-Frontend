@@ -38,6 +38,7 @@ export default function Modal({ product, onClose, onSave }) {
         setFormData((prev) => ({
           ...prev,
           image: data.secure_url,
+          imagePublicId: data.public_id,
         }));
       }
       return data.secure_url;
@@ -61,7 +62,7 @@ export default function Modal({ product, onClose, onSave }) {
 
     const payload = {
       ...formData,
-      price: Number(formData.price), // Convert price to number
+      price: Number(formData.price),
     };
 
     setSaving(true);
