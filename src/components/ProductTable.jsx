@@ -1,37 +1,66 @@
 "use client";
 
-import { TrashIcon, PencilIcon, ArrowPathIcon } from "@heroicons/react/24/solid";
+import {
+  TrashIcon,
+  PencilIcon,
+  ArrowPathIcon,
+} from "@heroicons/react/24/solid";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
-export default function ProductTable({ products, onEdit, onDelete, isLoading }) {
+export default function ProductTable({ onEdit }) {
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setIsLoading(true);
+      try {
+        const res = await axios.get("http://localhost:5000/api/products");
+        setProducts(res.data);
+        if (!res.data || res.data.length === 0) {
+          console.warn("No products found in the database.");
+        }
+
+        if (FormData.length === 0) {
+          console.warn("No products found in the database.");
+        }
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const handleDelete = async (id) => {
+    const productToDelete = products.find((p) => p._id === id);
+    try {
+      await axios.delete(`http://localhost:5000/api/products/${id}`);
+      setProducts((prev) => prev.filter((p) => p._id !== id));
+    } catch (error) {
+      console.error("Delete failed:", error);
+    } finally {
+      setConfirmDeleteId(null);
+    }
+  };
+
+  const handleDeleteClick = (id) => setConfirmDeleteId(id);
+  const handleConfirmDelete = () =>
+    confirmDeleteId && handleDelete(confirmDeleteId);
+  const handleCancelDelete = () => setConfirmDeleteId(null);
 
   const rowVariants = {
     hidden: { opacity: 0, y: 10 },
     visible: (i) => ({
       opacity: 1,
       y: 0,
-      transition: {
-        delay: i * 0.05,
-        duration: 0.3,
-      },
+      transition: { delay: i * 0.05, duration: 0.3 },
     }),
-  };
-
-  const handleDeleteClick = (id) => {
-    setConfirmDeleteId(id);
-  };
-
-  const handleConfirmDelete = () => {
-    if (confirmDeleteId) {
-      onDelete(confirmDeleteId);
-      setConfirmDeleteId(null);
-    }
-  };
-
-  const handleCancelDelete = () => {
-    setConfirmDeleteId(null);
   };
 
   return (
@@ -53,11 +82,13 @@ export default function ProductTable({ products, onEdit, onDelete, isLoading }) 
               <div className="text-red-600">
                 <TrashIcon className="h-12 w-12 mx-auto" />
               </div>
-              <h2 className="text-lg font-semibold text-gray-800">Delete Product?</h2>
+              <h2 className="text-lg font-semibold text-gray-800">
+                Delete Product?
+              </h2>
               <p className="text-gray-500 text-sm">
-                Are you sure you want to delete this product? This action cannot be undone.
+                Are you sure you want to delete this product? This action cannot
+                be undone.
               </p>
-
               <div className="flex justify-center space-x-4 pt-4">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -67,7 +98,6 @@ export default function ProductTable({ products, onEdit, onDelete, isLoading }) 
                 >
                   Cancel
                 </motion.button>
-
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -86,10 +116,18 @@ export default function ProductTable({ products, onEdit, onDelete, isLoading }) 
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gradient-to-r from-blue-50 to-indigo-50">
             <tr>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-blue-600 uppercase tracking-wider">Image</th>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-blue-600 uppercase tracking-wider">Product</th>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-blue-600 uppercase tracking-wider">Price</th>
-              <th className="px-6 py-4 text-right text-sm font-semibold text-blue-600 uppercase tracking-wider">Actions</th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-blue-600 uppercase tracking-wider">
+                Image
+              </th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-blue-600 uppercase tracking-wider">
+                Product
+              </th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-blue-600 uppercase tracking-wider">
+                Price
+              </th>
+              <th className="px-6 py-4 text-right text-sm font-semibold text-blue-600 uppercase tracking-wider">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -104,14 +142,17 @@ export default function ProductTable({ products, onEdit, onDelete, isLoading }) 
               </tr>
             ) : products.length === 0 ? (
               <tr>
-                <td colSpan="4" className="px-6 py-12 text-center text-gray-500">
+                <td
+                  colSpan="4"
+                  className="px-6 py-12 text-center text-gray-500"
+                >
                   No products found. Add your first product!
                 </td>
               </tr>
             ) : (
               products.map((product, index) => (
                 <motion.tr
-                  key={product.id}
+                  key={product._id}
                   custom={index}
                   initial="hidden"
                   animate="visible"
@@ -119,35 +160,35 @@ export default function ProductTable({ products, onEdit, onDelete, isLoading }) 
                   whileHover={{ scale: 1.01 }}
                   className="hover:bg-blue-50/50 transition-colors duration-150"
                 >
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex-shrink-0 h-12 w-12">
-                      <img
-                        className="h-12 w-12 rounded-lg object-cover shadow-sm border border-gray-200"
-                        src={product.image || '/placeholder-product.jpg'}
-                        alt={product.name}
-                      />
-                    </div>
+                  <td className="px-6 py-4">
+                    <img
+                      className="h-12 w-12 rounded-lg object-cover shadow-sm border border-gray-200"
+                      src={product.image || "/placeholder-product.jpg"}
+                      alt={product.name}
+                    />
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                    <div className="text-sm font-medium text-gray-900">
+                      {product.name}
+                    </div>
                     {product.category && (
                       <div className="text-xs text-gray-500 mt-1">
                         {product.category}
                       </div>
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                  <td className="px-6 py-4">
+                    <span className="px-3 py-1 inline-flex text-sm font-semibold rounded-full bg-green-100 text-green-800">
                       ₹{product.price.toLocaleString()}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <td className="px-6 py-4 text-right">
                     <div className="flex justify-end space-x-3">
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => onEdit(product)}
-                        className="text-blue-600 hover:text-blue-800 transition-colors p-2 rounded-full hover:bg-blue-100"
+                        className="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-blue-100"
                         title="Edit product"
                       >
                         <PencilIcon className="h-5 w-5" />
@@ -155,8 +196,8 @@ export default function ProductTable({ products, onEdit, onDelete, isLoading }) 
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => handleDeleteClick(product.id)}
-                        className="text-red-600 hover:text-red-800 transition-colors p-2 rounded-full hover:bg-red-100"
+                        onClick={() => handleDeleteClick(product._id)}
+                        className="text-red-600 hover:text-red-800 p-2 rounded-full hover:bg-red-100"
                         title="Delete product"
                       >
                         <TrashIcon className="h-5 w-5" />
@@ -170,9 +211,10 @@ export default function ProductTable({ products, onEdit, onDelete, isLoading }) 
         </table>
       </div>
 
-      {products.length > 0 && (
+      {products.length > 0 && !isLoading && (
         <div className="mt-4 text-sm text-gray-500">
-          Showing {products.length} {products.length === 1 ? 'product' : 'products'}
+          Showing {products.length}{" "}
+          {products.length === 1 ? "product" : "products"}
         </div>
       )}
     </div>
