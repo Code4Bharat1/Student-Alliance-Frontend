@@ -144,6 +144,7 @@ export default function Modal({ product, onClose, onSave }) {
       const result = await response.json();
 
       if (response.ok) {
+        window.dispatchEvent(new Event("productAdded"));
         onSave(result);
         onClose();
       } else {
@@ -156,6 +157,10 @@ export default function Modal({ product, onClose, onSave }) {
       setSaving(false);
     }
   };
+  
+  
+  
+  
 
   return (
     <div className="fixed inset-0 border-gray-700 text-black bg-gradient-to-r from-blue-500 to-pink-500 bg-opacity-80 flex items-center justify-center z-50">
