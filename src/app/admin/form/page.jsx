@@ -1,11 +1,11 @@
 import Form from '@/components/Form'
-import LoginForm from '@/components/LoginForm'
+import FormSwitcher from '@/components/FormSwitcher'
 import React from 'react'
 
 const Page = () => {
   return (
     <div>
-      <LoginForm/>
+      <FormSwitcher/>
     </div>
   )
 }
