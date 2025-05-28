@@ -37,17 +37,18 @@ export default function ProductTable({ onEdit }) {
     fetchProducts();
   }, []);
 
-  const handleDelete = async (id) => {
-    const productToDelete = products.find((p) => p._id === id);
-    try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`);
-      setProducts((prev) => prev.filter((p) => p._id !== id));
-    } catch (error) {
-      console.error("Delete failed:", error);
-    } finally {
-      setConfirmDeleteId(null);
-    }
-  };
+      const handleDelete = async (id) => {
+        const productToDelete = products.find((p) => p._id === id);
+        console.log("Deleting product:", productToDelete._id);
+        try {
+          await axios.delete(`http://localhost:5000/api/products/${productToDelete._id}`);
+          setProducts((prev) => prev.filter((p) => p._id !== id));
+        } catch (error) {
+          console.error("Delete failed:", error);
+        } finally {
+          setConfirmDeleteId(null);
+        }
+      };
 
   const handleDeleteClick = (id) => setConfirmDeleteId(id);
   const handleConfirmDelete = () =>
