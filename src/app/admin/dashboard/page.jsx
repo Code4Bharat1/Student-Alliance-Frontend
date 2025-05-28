@@ -94,6 +94,7 @@ export default function Admin() {
 
   return (
     <div className="flex h-screen">
+      
       <Sidebar />
       <main className="flex-1 p-8">
         <Header onAddProduct={handleAddProduct} />

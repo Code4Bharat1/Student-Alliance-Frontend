@@ -4,18 +4,36 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 
 export default function Modal({ product, onClose, onSave }) {
-  const [formData, setFormData] = useState(
-    product || { name: "", price: "", description: "", image: "" }
-  );
+  const [formData, setFormData] = useState({
+    name: "",
+    price: "",
+    description: "",
+    category: "",
+    image: "",
+    rating: 0,
+    quantity: 0,
+    discount: 0,
+    stocks: 0,
+    features: [],
+    additionalImages: ["", "", ""],
+    ...(product || {}) // Spread product props if they exist
+  });
+
+  // Ensure arrays are properly initialized
+  if (!formData.features) formData.features = [];
+  if (!formData.additionalImages) formData.additionalImages = ["", "", ""];
+
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [currentFeature, setCurrentFeature] = useState("");
+  const [uploadingIndex, setUploadingIndex] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleImageUpload = async (e) => {
+  const handleImageUpload = async (e, index = null) => {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -23,7 +41,12 @@ export default function Modal({ product, onClose, onSave }) {
     formDataUpload.append("file", file);
     formDataUpload.append("upload_preset", "Student-Alliance");
 
-    setUploading(true);
+    if (index !== null) {
+      setUploadingIndex(index);
+    } else {
+      setUploading(true);
+    }
+
     try {
       const res = await fetch(
         "https://api.cloudinary.com/v1_1/dlgksnq6u/image/upload",
@@ -35,22 +58,54 @@ export default function Modal({ product, onClose, onSave }) {
 
       const data = await res.json();
       if (data.secure_url) {
-        setFormData((prev) => ({
-          ...prev,
-          image: data.secure_url,
-        }));
+        if (index !== null) {
+          const updatedImages = [...formData.additionalImages];
+          updatedImages[index] = data.secure_url;
+          setFormData(prev => ({
+            ...prev,
+            additionalImages: updatedImages
+          }));
+        } else {
+          setFormData(prev => ({
+            ...prev,
+            image: data.secure_url,
+          }));
+        }
       }
       return data.secure_url;
     } catch (error) {
       console.error("Image upload failed:", error);
     } finally {
-      setUploading(false);
+      if (index !== null) {
+        setUploadingIndex(null);
+      } else {
+        setUploading(false);
+      }
     }
   };
 
+  const addFeature = () => {
+    if (currentFeature.trim() && !formData.features.includes(currentFeature.trim())) {
+      setFormData(prev => ({
+        ...prev,
+        features: [...prev.features, currentFeature.trim()]
+      }));
+      setCurrentFeature("");
+    }
+  };
+
+  const removeFeature = (index) => {
+    const updatedFeatures = [...formData.features];
+    updatedFeatures.splice(index, 1);
+    setFormData(prev => ({
+      ...prev,
+      features: updatedFeatures
+    }));
+  };
+
   const handleSubmit = async () => {
-    if (uploading) {
-      alert("Please wait until image upload is complete.");
+    if (uploading || uploadingIndex !== null) {
+      alert("Please wait until image uploads are complete.");
       return;
     }
 
@@ -61,7 +116,11 @@ export default function Modal({ product, onClose, onSave }) {
 
     const payload = {
       ...formData,
-      price: Number(formData.price), // Convert price to number
+      price: Number(formData.price),
+      rating: Number(formData.rating),
+      quantity: Number(formData.quantity),
+      discount: Number(formData.discount),
+      stocks: Number(formData.stocks)
     };
 
     setSaving(true);
@@ -74,15 +133,12 @@ export default function Modal({ product, onClose, onSave }) {
         body: JSON.stringify(payload),
       });
 
-      console.log(payload);
       const result = await response.json();
 
       if (response.ok) {
-        console.log("Product saved:", result);
         onSave(result);
         onClose();
       } else {
-        console.error("Save failed:", result.message);
         alert("Failed to save product: " + result.message);
       }
     } catch (error) {
@@ -92,13 +148,11 @@ export default function Modal({ product, onClose, onSave }) {
       setSaving(false);
     }
   };
-  
-  
 
   return (
     <div className="fixed inset-0 border-gray-700 text-black bg-gradient-to-r from-blue-500 to-pink-500 bg-opacity-80 flex items-center justify-center z-50">
       <motion.div
-        className="bg-white p-6 rounded-lg shadow-xl w-96"
+        className="bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
@@ -111,7 +165,7 @@ export default function Modal({ product, onClose, onSave }) {
           {/* Product Name */}
           <div>
             <label className="block text-gray-700 font-medium mb-1">
-              Product Name
+              Product Name *
             </label>
             <input
               type="text"
@@ -120,13 +174,14 @@ export default function Modal({ product, onClose, onSave }) {
               value={formData.name}
               onChange={handleChange}
               className="w-full border border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2 transition"
+              required
             />
           </div>
 
           {/* Product Price */}
           <div>
             <label className="block text-gray-700 font-medium mb-1">
-              Product Price
+              Product Price *
             </label>
             <input
               type="number"
@@ -135,6 +190,7 @@ export default function Modal({ product, onClose, onSave }) {
               value={formData.price}
               onChange={handleChange}
               className="w-full border border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2 transition"
+              required
             />
           </div>
 
@@ -153,10 +209,126 @@ export default function Modal({ product, onClose, onSave }) {
             ></textarea>
           </div>
 
-          {/* Product Image */}
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Product Category */}
+<div>
+  <label className="block text-gray-700 font-medium mb-1">
+    Product Category *
+  </label>
+  <select
+    name="category"
+    value={formData.category || ""}
+    onChange={handleChange}
+    className="w-full border border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2 transition"
+    required
+  >
+    <option value="">Select a category</option>
+    <option value="Camera">Camera</option>
+    <option value="Digital Board">Digital Board</option>
+    <option value="Mic">Mic</option>
+    <option value="Cable">Cable</option>
+    <option value="Speaker">Speaker</option>
+    <option value="Light">Light</option>
+    <option value="Stand">Stand</option>
+    <option value="OPS">OPS</option>
+    <option value="IFPD">IFPD</option>
+    <option value="3D Printers">3D Printers</option>
+    <option value="STEM & Robotics">STEM & Robotics</option>
+  </select>
+</div>
+
+            {/* Quantity */}
+            <div>
+              <label className="block text-gray-700 font-medium mb-1">
+                Quantity
+              </label>
+              <input
+                type="number"
+                name="quantity"
+                min="0"
+                placeholder="Enter quantity"
+                value={formData.quantity}
+                onChange={handleChange}
+                className="w-full border border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2 transition"
+              />
+            </div>
+
+            {/* Discount */}
+            <div>
+              <label className="block text-gray-700 font-medium mb-1">
+                Discount (%)
+              </label>
+              <input
+                type="number"
+                name="discount"
+                min="0"
+                max="100"
+                placeholder="Enter discount percentage"
+                value={formData.discount}
+                onChange={handleChange}
+                className="w-full border border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2 transition"
+              />
+            </div>
+
+            {/* Stocks */}
+            <div>
+              <label className="block text-gray-700 font-medium mb-1">
+                Stock Count
+              </label>
+              <input
+                type="number"
+                name="stocks"
+                min="0"
+                placeholder="Enter stock count"
+                value={formData.stocks}
+                onChange={handleChange}
+                className="w-full border border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2 transition"
+              />
+            </div>
+          </div>
+
+          {/* Features */}
           <div>
             <label className="block text-gray-700 font-medium mb-1">
-              Product Image
+              Product Features
+            </label>
+            <div className="flex gap-2 mb-2">
+              <input
+                type="text"
+                value={currentFeature}
+                onChange={(e) => setCurrentFeature(e.target.value)}
+                placeholder="Enter a feature"
+                className="flex-1 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2 transition"
+              />
+              <button
+                type="button"
+                onClick={addFeature}
+                className="bg-blue-100 text-blue-600 px-3 rounded-lg hover:bg-blue-200 transition"
+              >
+                Add
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {(formData.features || []).map((feature, index) => (
+                <div key={index} className="flex items-center bg-gray-100 px-3 py-1 rounded-full">
+                  <span>{feature}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeFeature(index)}
+                    className="ml-2 text-red-500 hover:text-red-700"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Main Product Image */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Main Product Image *
             </label>
             <div className="border border-dashed border-gray-300 rounded-lg p-4 text-center relative hover:shadow-md transition">
               <input
@@ -178,6 +350,36 @@ export default function Modal({ product, onClose, onSave }) {
               )}
             </div>
           </div>
+
+          {/* Additional Images */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Additional Product Images
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {(formData.additionalImages || []).map((img, index) => (
+                <div key={index} className="border border-dashed border-gray-300 rounded-lg p-4 text-center relative hover:shadow-md transition">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageUpload(e, index)}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                  />
+                  {uploadingIndex === index ? (
+                    <p className="text-blue-500">Uploading...</p>
+                  ) : img ? (
+                    <img
+                      src={img}
+                      alt={`Additional ${index + 1}`}
+                      className="h-20 w-20 mx-auto rounded-lg object-cover"
+                    />
+                  ) : (
+                    <p className="text-blue-500">Click to choose image</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Buttons */}
@@ -191,9 +393,9 @@ export default function Modal({ product, onClose, onSave }) {
           <button
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
             onClick={handleSubmit}
-            disabled={uploading || saving}
+            disabled={uploading || saving || uploadingIndex !== null}
           >
-            {uploading || saving ? "Saving..." : "Save"}
+            {uploading || saving || uploadingIndex !== null ? "Saving..." : "Save"}
           </button>
         </div>
       </motion.div>

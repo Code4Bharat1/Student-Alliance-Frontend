@@ -38,7 +38,7 @@ export default function Sidebar() {
 
   return (
     <motion.aside
-      className={`bg-gradient-to-b from-gray-800 to-gray-900 text-white h-screen shadow-2xl flex flex-col ${isCollapsed ? "w-20" : "w-64"}`}
+      className={`bg-gradient-to-b  from-gray-800 to-gray-900 text-white h-screen shadow-2xl flex flex-col ${isCollapsed ? "w-20" : "w-64"}`}
       initial={{ width: 256 }}
       animate={{ width: isCollapsed ? 80 : 256 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}

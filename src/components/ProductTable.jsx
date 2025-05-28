@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  TrashIcon,
-  PencilIcon,
-  ArrowPathIcon,
-} from "@heroicons/react/24/solid";
+import {TrashIcon,PencilIcon,ArrowPathIcon,} from "@heroicons/react/24/solid";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import axios from "axios";
