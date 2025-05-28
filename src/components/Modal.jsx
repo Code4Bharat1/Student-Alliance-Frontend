@@ -123,10 +123,18 @@ export default function Modal({ product, onClose, onSave }) {
       stocks: Number(formData.stocks)
     };
 
+    console.log("Submitting payload:", payload);
+
     setSaving(true);
     try {
-      const response = await fetch("http://localhost:5000/api/products", {
-        method: "POST",
+      const url = product
+        ? `http://localhost:5000/api/products/${product._id}`
+        : "http://localhost:5000/api/products";
+
+      const method = product ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -142,8 +150,8 @@ export default function Modal({ product, onClose, onSave }) {
         alert("Failed to save product: " + result.message);
       }
     } catch (error) {
-      console.error("Error saving product:", error);
-      alert("An unexpected error occurred.");
+      console.error("Submit error:", error);
+      alert("An error occurred.");
     } finally {
       setSaving(false);
     }
