@@ -65,34 +65,43 @@ export default function Modal({ product, onClose, onSave }) {
       price: Number(formData.price),
     };
 
+    console.log("Submitting payload:", payload);
+
     setSaving(true);
     try {
-      const response = await fetch("http://localhost:5000/api/products", {
-        method: "POST",
+      const url = product
+        ? `http://localhost:5000/api/products/${product._id}`
+        : "http://localhost:5000/api/products";
+
+      const method = product ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
       });
 
-      console.log(payload);
       const result = await response.json();
 
       if (response.ok) {
-        console.log("Product saved:", result);
+        console.log("Success:", result);
         onSave(result);
         onClose();
       } else {
-        console.error("Save failed:", result.message);
-        alert("Failed to save product: " + result.message);
+        console.error("Failed:", result.message);
+        alert("Failed: " + result.message);
       }
     } catch (error) {
-      console.error("Error saving product:", error);
-      alert("An unexpected error occurred.");
+      console.error("Submit error:", error);
+      alert("An error occurred.");
     } finally {
       setSaving(false);
     }
   };
+  
+  
   
   
 
