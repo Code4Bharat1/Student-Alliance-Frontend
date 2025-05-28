@@ -35,6 +35,14 @@ export default function ProductTable({ onEdit }) {
     };
 
     fetchProducts();
+
+    const handleProductAdded = () => fetchProducts();
+    window.addEventListener("productAdded", handleProductAdded);
+
+    return () => {
+      window.removeEventListener("productAdded", handleProductAdded);
+    };
+
   }, []);
 
       const handleDelete = async (id) => {

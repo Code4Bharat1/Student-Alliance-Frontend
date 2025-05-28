@@ -86,6 +86,7 @@ export default function Modal({ product, onClose, onSave }) {
       const result = await response.json();
 
       if (response.ok) {
+        window.dispatchEvent(new Event("productAdded"));
         console.log("Success:", result);
         onSave(result);
         onClose();
@@ -100,9 +101,6 @@ export default function Modal({ product, onClose, onSave }) {
       setSaving(false);
     }
   };
-  
-  
-  
   
 
   return (
