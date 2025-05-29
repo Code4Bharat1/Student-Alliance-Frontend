@@ -35,12 +35,12 @@ export default function Sidebar() {
 
   const productSubItems = [
     { name: "Camera", icon: <AiOutlineDashboard />, path: "camera" },
-    { name: "Digital Board", icon: <AiOutlineDashboard />,path: "digital_board" },  
+    { name: "Digital Board", icon: <AiOutlineDashboard />, path: "digital_board" },
     { name: "Mic", icon: <AiOutlineDashboard />, path: "mic" },
     { name: "Cable", icon: <AiOutlineDashboard />, path: "cable" },
     { name: "Speaker", icon: <AiOutlineDashboard />, path: "speaker" },
-    { name: "Light",  icon: <AiOutlineDashboard />, path: "light" },
-    { name: "Stands",  icon: <AiOutlineDashboard />, path: "stand" },
+    { name: "Light", icon: <AiOutlineDashboard />, path: "light" },
+    { name: "Stands", icon: <AiOutlineDashboard />, path: "stand" },
     { name: "OPS", icon: <AiOutlineDashboard />, path: "ops" },
   ];
 
@@ -50,7 +50,9 @@ export default function Sidebar() {
 
   return (
     <motion.aside
-      className={`bg-gradient-to-b from-gray-800 to-gray-900 text-white h-screen shadow-2xl flex flex-col ${isCollapsed ? "w-20" : "w-64"}`}
+      className={`bg-gradient-to-b from-gray-800 to-gray-900 text-white h-screen shadow-2xl flex flex-col ${
+        isCollapsed ? "w-20" : "w-64"
+      }`}
       initial={{ width: 256 }}
       animate={{ width: isCollapsed ? 80 : 256 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
@@ -82,7 +84,9 @@ export default function Sidebar() {
             key={index}
             href={`/admin/${item.path}`}
             onClick={() => setActiveItem(item.path)}
-            className={`flex items-center ${isCollapsed ? "justify-center" : "space-x-4"} p-3 rounded-lg transition-all duration-200 ease-in-out ${
+            className={`flex items-center ${
+              isCollapsed ? "justify-center" : "space-x-4"
+            } p-3 rounded-lg transition-all duration-200 ease-in-out ${
               activeItem === item.path
                 ? "bg-amber-500/20 text-amber-400 border-l-4 border-amber-400"
                 : "hover:bg-gray-700/50"
@@ -106,7 +110,9 @@ export default function Sidebar() {
         <div className="relative">
           <button
             onClick={() => setProductsOpen(!productsOpen)}
-            className={`w-full flex items-center ${isCollapsed ? "justify-center" : "space-x-4"} p-3 rounded-lg transition-all duration-200 ease-in-out ${
+            className={`w-full flex items-center ${
+              isCollapsed ? "justify-center" : "space-x-4"
+            } p-3 rounded-lg transition-all duration-200 ease-in-out ${
               pathname.includes("products")
                 ? "bg-amber-500/20 text-amber-400 border-l-4 border-amber-400"
                 : "hover:bg-gray-700/50"
@@ -133,21 +139,33 @@ export default function Sidebar() {
           <AnimatePresence initial={false}>
             {!isCollapsed && productsOpen && (
               <motion.div
-                className="pl-10 mt-1 space-y-1 overflow-hidden"
+                className="pl-10 mt-1 space-y-1 overflow-auto"
+                style={{
+                  maxHeight: 200,
+                  /* Hide scrollbar for Chrome, Safari and Opera */
+                  scrollbarWidth: "none" /* Firefox */,
+                  msOverflowStyle: "none" /* IE and Edge */,
+                }}
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
+                /* Hide scrollbar for Chrome, Safari and Opera */
+                // We add CSS below inside style, but to hide scrollbar fully, use this CSS class in global CSS or tailwind config:
+                // For this snippet, added inline styles and tailwind class overflow-auto to keep scroll functional
               >
+                <style jsx>{`
+                  div::-webkit-scrollbar {
+                    display: none;
+                  }
+                `}</style>
                 {productSubItems.map((subItem, idx) => (
                   <Link
                     key={idx}
                     href={`/admin/${subItem.path}`}
                     onClick={() => setActiveItem(subItem.path)}
                     className={`block text-sm px-2 py-1 rounded hover:bg-gray-700 transition-colors ${
-                      pathname.includes(subItem.path)
-                        ? "text-amber-400"
-                        : "text-white/80"
+                      pathname.includes(subItem.path) ? "text-amber-400" : "text-white/80"
                     }`}
                   >
                     {subItem.name}
@@ -164,7 +182,9 @@ export default function Sidebar() {
         <motion.div
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className={`flex items-center ${isCollapsed ? "justify-center" : "space-x-4"} p-3 rounded-lg hover:bg-gray-700/50 transition-colors cursor-pointer`}
+          className={`flex items-center ${
+            isCollapsed ? "justify-center" : "space-x-4"
+          } p-3 rounded-lg hover:bg-gray-700/50 transition-colors cursor-pointer`}
         >
           <span className="text-2xl text-red-400">
             <FiLogOut />
