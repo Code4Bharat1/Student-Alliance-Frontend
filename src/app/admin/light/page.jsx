@@ -19,7 +19,7 @@ export default function Admin() {
       setLoading(true);
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/products/category/Camera"
+          "http://localhost:5000/api/products/category/Light"
         );
         setProducts(res.data);
         if (!res.data || res.data.length === 0) {
@@ -75,7 +75,7 @@ export default function Admin() {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <h1 className="text-4xl font-bold">Camera</h1>
+              <h1 className="text-4xl font-bold">Lights</h1>
             </motion.div>
 
             {/* Product Cards */}
