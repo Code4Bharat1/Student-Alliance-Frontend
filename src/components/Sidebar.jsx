@@ -44,13 +44,11 @@ export default function Sidebar() {
     { name: "OPS", icon: <AiOutlineDashboard />, path: "ops" },
   ];
 
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
-  };
+  const toggleSidebar = () => setIsCollapsed(!isCollapsed);
 
   return (
     <motion.aside
-      className={`bg-gradient-to-b from-gray-800 to-gray-900 text-white h-screen shadow-2xl flex flex-col ${
+      className={`fixed top-0 left-0 h-screen z-50 bg-gradient-to-b from-gray-800 to-gray-900 text-white shadow-2xl flex flex-col transition-all duration-300 ${
         isCollapsed ? "w-20" : "w-64"
       }`}
       initial={{ width: 256 }}
@@ -135,24 +133,19 @@ export default function Sidebar() {
             )}
           </button>
 
-          {/* Animated Dropdown */}
           <AnimatePresence initial={false}>
             {!isCollapsed && productsOpen && (
               <motion.div
                 className="pl-10 mt-1 space-y-1 overflow-auto"
                 style={{
                   maxHeight: 200,
-                  /* Hide scrollbar for Chrome, Safari and Opera */
-                  scrollbarWidth: "none" /* Firefox */,
-                  msOverflowStyle: "none" /* IE and Edge */,
+                  scrollbarWidth: "none",
+                  msOverflowStyle: "none",
                 }}
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
-                /* Hide scrollbar for Chrome, Safari and Opera */
-                // We add CSS below inside style, but to hide scrollbar fully, use this CSS class in global CSS or tailwind config:
-                // For this snippet, added inline styles and tailwind class overflow-auto to keep scroll functional
               >
                 <style jsx>{`
                   div::-webkit-scrollbar {
@@ -165,7 +158,9 @@ export default function Sidebar() {
                     href={`/admin/${subItem.path}`}
                     onClick={() => setActiveItem(subItem.path)}
                     className={`block text-sm px-2 py-1 rounded hover:bg-gray-700 transition-colors ${
-                      pathname.includes(subItem.path) ? "text-amber-400" : "text-white/80"
+                      pathname.includes(subItem.path)
+                        ? "text-amber-400"
+                        : "text-white/80"
                     }`}
                   >
                     {subItem.name}
@@ -204,3 +199,6 @@ export default function Sidebar() {
     </motion.aside>
   );
 }
+
+
+  /* Navigation */
