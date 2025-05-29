@@ -100,7 +100,6 @@ export default function Admin() {
                   <div className="p-4 text-center font-semibold text-sm flex-grow">
                     {product.name}
                   </div>
-                  {/* Add more product details/buttons as needed */}
                 </motion.div>
               ))}
             </div>
