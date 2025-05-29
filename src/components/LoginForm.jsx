@@ -142,7 +142,7 @@ export default function LoginForm({ setIsLogin }) {
                     </label>
                   </div>
                   <a
-                    href="#"
+                    href="/admin/forget"
                     className="text-sm text-blue-600 font-medium hover:underline hover:text-blue-700 transition-colors"
                   >
                     Forgot password?
