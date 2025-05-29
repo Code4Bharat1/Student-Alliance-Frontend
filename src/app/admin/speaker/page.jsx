@@ -19,7 +19,7 @@ export default function Admin() {
       setLoading(true);
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/products/category/Camera"
+          "http://localhost:5000/api/products/category/Speaker"
         );
         setProducts(res.data);
         if (!res.data || res.data.length === 0) {
@@ -75,7 +75,7 @@ export default function Admin() {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <h1 className="text-4xl font-bold">Camera</h1>
+              <h1 className="text-4xl font-bold">Speakers</h1>
             </motion.div>
 
             {/* Product Cards */}
@@ -100,6 +100,7 @@ export default function Admin() {
                   <div className="p-4 text-center font-semibold text-sm flex-grow">
                     {product.name}
                   </div>
+                  {/* Add more product details/buttons as needed */}
                 </motion.div>
               ))}
             </div>
