@@ -300,7 +300,7 @@ export default function Modal({ product, onClose, onSave }) {
                 onChange={handleChange}
                 className="w-full border border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2 transition"
               />
-            </div>
+            </div> 
           </div>
 
           {/* Features */}

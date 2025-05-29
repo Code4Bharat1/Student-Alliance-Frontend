@@ -34,14 +34,13 @@ export default function ForgotPass() {
     setIsSubmitting(true);
 
     try {
-      // Call backend to check email
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/check-email",
-        {
-          email,
-        }
-      );
-      // If email exists, route to OTP page
+      // 1. Check if email exists
+      await axios.post("http://localhost:5000/api/auth/check-email", { email });
+
+      // 2. Send OTP to email
+      await axios.post("http://localhost:5000/api/auth/send-otp", { email });
+
+      // 3. Route to OTP page
       router.push(`/admin/OTP?email=${encodeURIComponent(email)}`);
     } catch (error) {
       setEmailError(
