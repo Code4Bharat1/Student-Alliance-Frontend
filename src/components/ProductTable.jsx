@@ -8,11 +8,15 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function ProductTable({ onEdit }) {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -172,15 +176,27 @@ export default function ProductTable({ onEdit }) {
                   whileHover={{ scale: 1.01 }}
                   className="hover:bg-blue-50/50 transition-colors duration-150"
                 >
-                  <td className="px-6 py-4">
+                  <td
+                    className="px-6 py-4"
+                    onClick={() => {
+                      console.log("Row clicked:", product);
+                      router.push(`/admin/ProductDetails/${product._id}`);
+                    }}
+                  >
                     <img
                       className="h-12 w-12 rounded-lg object-cover shadow-sm border border-gray-200"
                       src={product.image || "/placeholder-product.jpg"}
                       alt={product.name}
                     />
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-gray-900">
+                  <td
+                    className="px-6 py-4 "
+                    onClick={() => {
+                      console.log("Row clicked:", product);
+                      router.push(`/admin/ProductDetails/${product._id}`);
+                    }}
+                  >
+                    <div className="text-sm font-medium text-gray-900 ">
                       {product.name}
                     </div>
                     {product.category && (
@@ -189,12 +205,24 @@ export default function ProductTable({ onEdit }) {
                       </div>
                     )}
                   </td>
-                  <td className="px-6 py-4">
+                  <td
+                    className="px-6 py-4"
+                    onClick={() => {
+                      console.log("Row clicked:", product);
+                      router.push(`/admin/ProductDetails/${product._id}`);
+                    }}
+                  >
                     <span className="px-3 py-1 inline-flex text-sm font-semibold rounded-full bg-green-100 text-green-800">
                       ₹{product.price.toLocaleString()}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-black">
+                  <td
+                    className="px-6 py-4 text-black"
+                    onClick={() => {
+                      console.log("Row clicked:", product);
+                      router.push(`/admin/ProductDetails/${product._id}`);
+                    }}
+                  >
                     {product.quantity.toLocaleString()}
                   </td>
                   <td className="px-6 py-4 text-right">
