@@ -143,8 +143,8 @@ export default function OTP() {
                           initial={{ scale: 0.8 }}
                           animate={{ scale: 1 }}
                           transition={{ delay: 0.3 + index * 0.05 }}
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
+                          whilehover={{ scale: 1.05 }}
+                          whiletap={{ scale: 0.95 }}
                         >
                           <input
                             ref={(el) => (inputRefs.current[index] = el)}
@@ -170,8 +170,8 @@ export default function OTP() {
                     <button
                       type="submit"
                       className="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
+                      whilehover={{ scale: 1.02 }}
+                      whiletap={{ scale: 0.98 }}
                     >
                       <span>Verify</span>
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
@@ -236,7 +236,7 @@ export default function OTP() {
                     Your account has been successfully verified. You can now access all features.
                   </p>
                   <Link
-                    href="/dashboard"
+                    href="/admin/dashboard"
                     className="w-full inline-block py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg"
                   >
                     Continue to Dashboard
