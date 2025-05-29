@@ -1,23 +1,25 @@
 "use client";
 
-import { 
-  AiOutlineDashboard, 
-  AiOutlineTool, 
-  AiOutlineRobot, 
-  AiOutlineMenuFold, 
-  AiOutlineMenuUnfold 
+import {
+  AiOutlineDashboard,
+  AiOutlineTool,
+  AiOutlineRobot,
+  AiOutlineMenuFold,
+  AiOutlineMenuUnfold,
 } from "react-icons/ai";
 import { MdTv } from "react-icons/md";
 import { FiPackage, FiLogOut } from "react-icons/fi";
+import { IoIosArrowDown } from "react-icons/io";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
   const [activeItem, setActiveItem] = useState("");
+  const [productsOpen, setProductsOpen] = useState(false);
 
   useEffect(() => {
     const path = pathname.split("/")[2] || "dashboard";
@@ -26,10 +28,20 @@ export default function Sidebar() {
 
   const menuItems = [
     { name: "Dashboard", icon: <AiOutlineDashboard />, path: "dashboard" },
-    { name: "Products", icon: <FiPackage />, path: "products" },
     { name: "IFPD", icon: <MdTv />, path: "ifpd" },
     { name: "3D Printers", icon: <AiOutlineTool />, path: "3d-printers" },
     { name: "STEM & Robotics", icon: <AiOutlineRobot />, path: "stem-robotics" },
+  ];
+
+  const productSubItems = [
+    { name: "Camera", icon: <AiOutlineDashboard />, path: "camera" },
+    { name: "Digital Board", icon: <AiOutlineDashboard />,path: "digital_board" },  
+    { name: "Mic", icon: <AiOutlineDashboard />, path: "mic" },
+    { name: "Cable", icon: <AiOutlineDashboard />, path: "cable" },
+    { name: "Speaker", icon: <AiOutlineDashboard />, path: "speaker" },
+    { name: "Light",  icon: <AiOutlineDashboard />, path: "light" },
+    { name: "Stands",  icon: <AiOutlineDashboard />, path: "stand" },
+    { name: "OPS", icon: <AiOutlineDashboard />, path: "ops" },
   ];
 
   const toggleSidebar = () => {
@@ -38,7 +50,7 @@ export default function Sidebar() {
 
   return (
     <motion.aside
-      className={`bg-gradient-to-b  from-gray-800 to-gray-900 text-white h-screen shadow-2xl flex flex-col ${isCollapsed ? "w-20" : "w-64"}`}
+      className={`bg-gradient-to-b from-gray-800 to-gray-900 text-white h-screen shadow-2xl flex flex-col ${isCollapsed ? "w-20" : "w-64"}`}
       initial={{ width: 256 }}
       animate={{ width: isCollapsed ? 80 : 256 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
@@ -46,7 +58,7 @@ export default function Sidebar() {
       {/* Header */}
       <div className="p-4 flex items-center justify-between border-b border-gray-700">
         {!isCollapsed && (
-          <motion.h1 
+          <motion.h1
             className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent"
             initial={{ opacity: 1 }}
             animate={{ opacity: isCollapsed ? 0 : 1 }}
@@ -89,6 +101,62 @@ export default function Sidebar() {
             )}
           </Link>
         ))}
+
+        {/* Products Dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => setProductsOpen(!productsOpen)}
+            className={`w-full flex items-center ${isCollapsed ? "justify-center" : "space-x-4"} p-3 rounded-lg transition-all duration-200 ease-in-out ${
+              pathname.includes("products")
+                ? "bg-amber-500/20 text-amber-400 border-l-4 border-amber-400"
+                : "hover:bg-gray-700/50"
+            }`}
+          >
+            <span className="text-2xl">
+              <FiPackage />
+            </span>
+            {!isCollapsed && (
+              <div className="flex items-center justify-between w-full">
+                <span className="text-lg font-medium">Products</span>
+                <motion.span
+                  className="ml-2"
+                  animate={{ rotate: productsOpen ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <IoIosArrowDown size={16} />
+                </motion.span>
+              </div>
+            )}
+          </button>
+
+          {/* Animated Dropdown */}
+          <AnimatePresence initial={false}>
+            {!isCollapsed && productsOpen && (
+              <motion.div
+                className="pl-10 mt-1 space-y-1 overflow-hidden"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                {productSubItems.map((subItem, idx) => (
+                  <Link
+                    key={idx}
+                    href={`/admin/${subItem.path}`}
+                    onClick={() => setActiveItem(subItem.path)}
+                    className={`block text-sm px-2 py-1 rounded hover:bg-gray-700 transition-colors ${
+                      pathname.includes(subItem.path)
+                        ? "text-amber-400"
+                        : "text-white/80"
+                    }`}
+                  >
+                    {subItem.name}
+                  </Link>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </nav>
 
       {/* Footer */}
