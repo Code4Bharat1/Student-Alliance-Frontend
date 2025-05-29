@@ -2,11 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function ForgotPass() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -14,10 +17,33 @@ export default function ForgotPass() {
     return () => setIsMounted(false);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Password reset requested for:", email);
-    setIsSubmitted(true);
+    
+    // Validate email
+    if (!email.trim()) {
+      setEmailError("Email is required");
+      return;
+    }
+    
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    try {
+      // Simulate API call to send OTP
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Navigate to OTP page with email as query parameter
+      router.push(`/admin/OTP?email=${encodeURIComponent(email)}`);
+    } catch (error) {
+      console.error("Failed to send OTP:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -57,105 +83,105 @@ export default function ForgotPass() {
               </motion.div>
               
               <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center">
-                {isSubmitted ? "Check Your Email" : "Reset Password"}
+                Reset Password
               </h2>
               <p className="text-gray-500 text-center mb-6">
-                {isSubmitted 
-                  ? "We've sent a password reset link to your email" 
-                  : "Enter your email to receive a reset link"}
+                Enter your email to receive an OTP
               </p>
 
-              {!isSubmitted ? (
-                <form onSubmit={handleSubmit}>
-                  <motion.div 
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="mb-6"
+              <form onSubmit={handleSubmit}>
+                <motion.div 
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="mb-6"
+                >
+                  <label
+                    htmlFor="email"
+                    className="block text-gray-700 text-sm font-medium mb-2"
                   >
-                    <label
-                      htmlFor="email"
-                      className="block text-gray-700 text-sm font-medium mb-2"
-                    >
-                      Email Address
-                    </label>
-                    <div className="relative">
-                      <input
-                        id="email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 pl-10"
-                        placeholder="your@email.com"
-                        required
-                      />
-                      <div className="absolute left-3 top-3 text-gray-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                          <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                        </svg>
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                  >
-                    <Link href={'/admin/OTP'}>
-                    <button
-                      type="submit"
-                      className="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center"
-                      whilehover={{ scale: 1.02 }}
-                      whiletap={{ scale: 0.98 }}
-                    >
-                      <span>Send Reset Link</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                    Email Address <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (e.target.value.trim() !== "") {
+                          setEmailError("");
+                        }
+                      }}
+                      onBlur={() => {
+                        if (!email.trim()) {
+                          setEmailError("Email is required");
+                        } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+                          setEmailError("Please enter a valid email address");
+                        }
+                      }}
+                      className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-all duration-200 pl-10 ${
+                        emailError
+                          ? "bg-red-50 border-red-400 focus:ring-red-500"
+                          : "bg-gray-50 border-gray-300 focus:ring-blue-500 focus:border-transparent"
+                      }`}
+                      placeholder="your@email.com"
+                      required
+                    />
+                    <div className={`absolute left-3 top-3 ${
+                      emailError ? "text-red-400" : "text-gray-400"
+                    }`}>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                         <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                       </svg>
-                    </button>
-                    </Link>
-                  </motion.div>
-                </form>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5 }}
-                  className="text-center"
-                >
-                  <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      className="h-10 w-10 text-green-500" 
-                      fill="none" 
-                      viewBox="0 0 24 24" 
-                      stroke="currentColor"
-                    >
-                      <path 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        strokeWidth={2} 
-                        d="M5 13l4 4L19 7" 
-                      />
-                    </svg>
+                    </div>
                   </div>
-                  <p className="text-gray-600 mb-6">
-                    If an account exists with {email}, you'll receive an email with instructions to reset your password.
-                  </p>
+                  {emailError && (
+                    <motion.p 
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mt-1 text-sm text-red-500"
+                    >
+                      {emailError}
+                    </motion.p>
+                  )}
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
                   <button
-                    onClick={() => {
-                      setIsSubmitted(false);
-                      setEmail("");
-                    }}
-                    className="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg"
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={`w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-lg transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center ${
+                      isSubmitting ? 'opacity-75' : 'hover:from-blue-600 hover:to-purple-700'
+                    }`}
+                    whilehover={{ scale: isSubmitting ? 1 : 1.02 }}
+                    whiletap={{ scale: isSubmitting ? 1 : 0.98 }}
                   >
-                    Resend Email
+                    {isSubmitting ? (
+                      <>
+                        <span>Sending OTP...</span>
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                      </>
+                    ) : (
+                      <>
+                        <span>Send OTP</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                          <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                        </svg>
+                      </>
+                    )}
                   </button>
                 </motion.div>
-              )}
+              </form>
 
               <motion.div 
                 initial={{ opacity: 0 }}
