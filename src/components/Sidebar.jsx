@@ -89,7 +89,7 @@ export default function Sidebar() {
           {isCollapsed ? (
             <AiOutlineMenuUnfold size={20} />
           ) : (
-            <AiOutlineMenuFold size={20} />
+            <AiOutlineMenuFold size={20} /> 
           )}
         </button>
       </div>
