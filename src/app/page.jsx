@@ -1,10 +1,11 @@
 import React from 'react'
-import Admin from './admin/dashboard/page'
+import LoginForm from '@/components/LoginForm'
+import FormSwitcher from '@/components/FormSwitcher'
 
 export default function Page() {
   return (
     <div>
-      <Admin/>
+      <FormSwitcher/>
     </div>
   )
 }

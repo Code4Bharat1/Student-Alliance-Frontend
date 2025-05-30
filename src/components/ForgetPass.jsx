@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function ForgotPass() {
   const router = useRouter();
@@ -32,20 +33,38 @@ export default function ForgotPass() {
     }
 
     setIsSubmitting(true);
+    setEmailError("");
 
     try {
       // 1. Check if email exists
       await axios.post("http://localhost:5000/api/auth/check-email", { email });
 
       // 2. Send OTP to email
-      await axios.post("http://localhost:5000/api/auth/send-otp", { email });
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/send-otp",
+        { email }
+      );
 
       // 3. Route to OTP page
+      toast.success("OTP sent successfully! Please check your email.");
       router.push(`/admin/OTP?email=${encodeURIComponent(email)}`);
     } catch (error) {
-      setEmailError(
-        error.response?.data?.message || "Failed to verify email. Try again."
-      );
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        if (error.response.status === 429) {
+          setEmailError(error.response.data.message);
+        } else {
+          setEmailError(
+            error.response.data.message || "Failed to verify email. Try again."
+          );
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        setEmailError("Network error. Please check your connection.");
+      } else {
+        // Something happened in setting up the request
+        setEmailError("An unexpected error occurred.");
+      }
     } finally {
       setIsSubmitting(false);
     }
