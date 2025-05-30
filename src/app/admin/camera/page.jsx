@@ -61,25 +61,23 @@ export default function Admin() {
   return (
     <>
       <div className="flex h-screen">
-        <Sidebar />
         <main className="flex-1 p-8 overflow-y-auto">
-          <Header onAddProduct={handleAddProduct} />
 
           {/* Products Section */}
           <div className="bg-white text-black mt-10">
             {/* Header */}
             <motion.div
-              className="text-center py-5"
+              className="text-center py-0"
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <h1 className="text-4xl font-bold">Camera</h1>
+              <h1 className="text-4xl mb-15 ml-60 font-bold">Camera</h1>
             </motion.div>
 
             {/* Product Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-6 pb-16">
+            <div className="grid grid-cols-1 ml-60 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-6 pb-16">
               {products.map((product, index) => (
                 <motion.div
                   key={product._id || index}

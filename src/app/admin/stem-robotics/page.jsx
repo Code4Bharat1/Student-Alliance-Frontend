@@ -73,7 +73,7 @@ export default function Admin() {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <h1 className="text-4xl font-bold">IFPD Panels</h1>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Stem & Robotics</h1>
             </motion.div>
 
             {/* Product Cards */}
