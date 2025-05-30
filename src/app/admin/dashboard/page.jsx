@@ -4,14 +4,18 @@ import Header from "@/components/Header";
 import Modal from "@/components/Modal";
 import ProductTable from "@/components/ProductTable";
 import Sidebar from "@/components/Sidebar";
-import { useState, useEffect } from "react";
 
-// Create a custom hook for product persistence
+import { useState, useEffect } from "react";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import jwtDecode from "jwt-decode";
+
+// Custom hook for product persistence
 function useProductStore() {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load products on initial render
+  // Load from localStorage
   useEffect(() => {
     const loadProducts = () => {
       try {
@@ -28,7 +32,7 @@ function useProductStore() {
     loadProducts();
   }, []);
 
-  // Save products whenever they change
+  // Save to localStorage when changed
   useEffect(() => {
     if (!isLoading) {
       localStorage.setItem("dashboard_products", JSON.stringify(products));
@@ -49,7 +53,6 @@ function useProductStore() {
         }
       }
     };
-
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, [products]);
@@ -58,6 +61,32 @@ function useProductStore() {
 }
 
 export default function Admin() {
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Token check on mount
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (!token) {
+      router.push("/admin/form");
+    } else {
+      try {
+        const decoded = jwtDecode(token);
+        // Optional: validate expiration
+        if (decoded.exp * 1000 < Date.now()) {
+          Cookies.remove("token");
+          router.push("/admin/form");
+        } else {
+          setIsAuthenticated(true);
+        }
+      } catch (err) {
+        console.error("Invalid token:", err);
+        Cookies.remove("token");
+        router.push("/login");
+      }
+    }
+  }, [router]);
+
   const { products, setProducts, isLoading } = useProductStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -79,22 +108,21 @@ export default function Admin() {
 
   const saveProduct = (product) => {
     if (selectedProduct) {
-      // Update existing product
       const updatedProducts = products.map((p) =>
         p.id === product.id ? product : p
       );
       setProducts(updatedProducts);
     } else {
-      // Add new product
       const newProduct = { ...product, id: Date.now() };
       setProducts([...products, newProduct]);
     }
     setIsModalOpen(false);
   };
 
+  if (!isAuthenticated) return null;
+
   return (
     <div className="flex h-screen">
-      
       <Sidebar />
       <main className="flex-1 p-8">
         <Header onAddProduct={handleAddProduct} />
