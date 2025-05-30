@@ -11,7 +11,7 @@ import { MdTv } from "react-icons/md";
 import { FiPackage, FiLogOut } from "react-icons/fi";
 import { IoIosArrowDown } from "react-icons/io";
 import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -30,12 +30,22 @@ export default function Sidebar() {
     { name: "Dashboard", icon: <AiOutlineDashboard />, path: "dashboard" },
     { name: "IFPD", icon: <MdTv />, path: "ifpd" },
     { name: "3D Printers", icon: <AiOutlineTool />, path: "3d-printers" },
-    { name: "STEM & Robotics", icon: <AiOutlineRobot />, path: "stem-robotics" },
+    {
+      name: "STEM & Robotics",
+      icon: <AiOutlineRobot />,
+      path: "stem-robotics",
+    },
   ];
+
+  const router = useRouter();
 
   const productSubItems = [
     { name: "Camera", icon: <AiOutlineDashboard />, path: "camera" },
-    { name: "Digital Board", icon: <AiOutlineDashboard />, path: "digital_board" },
+    {
+      name: "Digital Board",
+      icon: <AiOutlineDashboard />,
+      path: "digital_board",
+    },
     { name: "Mic", icon: <AiOutlineDashboard />, path: "mic" },
     { name: "Cable", icon: <AiOutlineDashboard />, path: "cable" },
     { name: "Speaker", icon: <AiOutlineDashboard />, path: "speaker" },
@@ -45,6 +55,11 @@ export default function Sidebar() {
   ];
 
   const toggleSidebar = () => setIsCollapsed(!isCollapsed);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/");
+  };
 
   return (
     <motion.aside
@@ -71,7 +86,11 @@ export default function Sidebar() {
           onClick={toggleSidebar}
           className="p-2 rounded-full hover:bg-gray-700 text-amber-400 transition-colors"
         >
-          {isCollapsed ? <AiOutlineMenuUnfold size={20} /> : <AiOutlineMenuFold size={20} />}
+          {isCollapsed ? (
+            <AiOutlineMenuUnfold size={20} />
+          ) : (
+            <AiOutlineMenuFold size={20} />
+          )}
         </button>
       </div>
 
@@ -190,6 +209,7 @@ export default function Sidebar() {
               initial={{ opacity: 1 }}
               animate={{ opacity: isCollapsed ? 0 : 1 }}
               transition={{ duration: 0.1 }}
+              onClick={handleLogout}
             >
               Logout
             </motion.span>
