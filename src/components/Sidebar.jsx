@@ -48,7 +48,7 @@ export default function Sidebar() {
 
   return (
     <motion.aside
-      className={`fixed top-0 left-0 h-screen z-50 bg-gradient-to-b from-gray-800 to-gray-900 text-white shadow-2xl flex flex-col transition-all duration-300 ${
+      className={`fixed top-0 left-0 h-full z-50 bg-gradient-to-b from-gray-800 to-gray-900 text-white shadow-2xl flex flex-col transition-all duration-300 ${
         isCollapsed ? "w-20" : "w-64"
       }`}
       initial={{ width: 256 }}
@@ -199,6 +199,3 @@ export default function Sidebar() {
     </motion.aside>
   );
 }
-
-
-  /* Navigation */
