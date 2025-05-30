@@ -47,7 +47,7 @@ export default function ForgotPass() {
 
       // 3. Route to OTP page
       toast.success("OTP sent successfully! Please check your email.");
-      router.push(`/admin/OTP?email=${encodeURIComponent(email)}`);
+      router.push(`/OTP?email=${encodeURIComponent(email)}`);
     } catch (error) {
       if (error.response) {
         // The request was made and the server responded with a status code
@@ -246,7 +246,7 @@ export default function ForgotPass() {
                 <p className="text-gray-600">
                   Remember your password?{" "}
                   <Link
-                    href="/admin/form"
+                    href="/form"
                     className="text-blue-600 font-medium hover:underline hover:text-blue-700 transition-colors"
                   >
                     Login

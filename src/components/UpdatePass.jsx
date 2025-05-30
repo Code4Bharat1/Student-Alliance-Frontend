@@ -40,7 +40,7 @@ const UpdatePass = () => {
       });
       setSuccess("Password updated successfully!");
       setTimeout(() => {
-        router.push("/admin/form");
+        router.push("/form");
       }, 1500);
     } catch (err) {
       setError(
