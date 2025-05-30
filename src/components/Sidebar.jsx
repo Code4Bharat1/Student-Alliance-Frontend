@@ -14,12 +14,15 @@ import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { useDispatch } from "react-redux";
+import { logout } from "@/redux/slices/authSlice";
 
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
   const [activeItem, setActiveItem] = useState("");
   const [productsOpen, setProductsOpen] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const path = pathname.split("/")[2] || "dashboard";
@@ -57,7 +60,7 @@ export default function Sidebar() {
   const toggleSidebar = () => setIsCollapsed(!isCollapsed);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    dispatch(logout()); // This will clear token, user, and isAuthenticated in Redux and localStorage
     router.push("/");
   };
 
@@ -89,7 +92,7 @@ export default function Sidebar() {
           {isCollapsed ? (
             <AiOutlineMenuUnfold size={20} />
           ) : (
-            <AiOutlineMenuFold size={20} /> 
+            <AiOutlineMenuFold size={20} />
           )}
         </button>
       </div>

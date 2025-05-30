@@ -5,6 +5,9 @@ import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 
+export const dynamic = "force-dynamic";
+
+
 export default function OTP() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [isResending, setIsResending] = useState(false);

@@ -1,12 +1,16 @@
+'use client'
 import UpdatePass from '@/components/UpdatePass'
-import React from 'react'
+import React, { Suspense } from "react";
+
 
 const page = () => {
   return (
     <div>
-      <UpdatePass/>
+      <Suspense fallback={<div>Loading...</div>}>
+        <UpdatePass />
+      </Suspense>
     </div>
-  )
+  );
 }
 
-export default page
+export default page;

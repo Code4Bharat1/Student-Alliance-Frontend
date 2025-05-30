@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 const UpdatePass = () => {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
