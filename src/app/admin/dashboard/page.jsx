@@ -1,7 +1,5 @@
 "use client";
 
-import Header from "@/components/Header";
-import Modal from "@/components/Modal";
 import ProductTable from "@/components/ProductTable";
 import Sidebar from "@/components/Sidebar";
 import { useState, useEffect } from "react";
@@ -94,10 +92,8 @@ export default function Admin() {
 
   return (
     <div className="flex h-screen">
-      
-      <Sidebar />
+    
       <main className="flex-1 p-8">
-        <Header onAddProduct={handleAddProduct} />
         <ProductTable
           products={products}
           onEdit={handleEditProduct}

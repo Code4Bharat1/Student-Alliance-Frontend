@@ -1,6 +1,6 @@
 "use client";
 
-import {UserIcon,MagnifyingGlassIcon,PlusIcon,} from "@heroicons/react/24/solid";
+import { UserIcon, MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
@@ -9,7 +9,7 @@ export default function Header({ onAddProduct }) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
+    <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm ml-64 transition-all duration-300">
       <div className="flex justify-between items-center px-6 py-4">
         {/* Left Section - Title */}
         <motion.h1
@@ -66,9 +66,9 @@ export default function Header({ onAddProduct }) {
           {/* User Profile Icon */}
           <motion.div whileHover={{ scale: 1.1 }}>
             <Link href={'/admin/form'}>
-            <button className="p-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md">
-              <UserIcon className="h-6 w-6" />
-            </button>
+              <button className="p-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md">
+                <UserIcon className="h-6 w-6" />
+              </button>
             </Link>
           </motion.div>
         </div>

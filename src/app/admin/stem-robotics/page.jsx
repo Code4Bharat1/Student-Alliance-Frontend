@@ -61,9 +61,7 @@ export default function Admin() {
   return (
     <>
       <div className="flex h-screen">
-        <Sidebar />
-        <main className="flex-1 p-8 overflow-y-auto">
-          <Header onAddProduct={handleAddProduct} />
+        <div className="flex-1 p-6 overflow-y-auto ml-64"> 
 
           {/* Products Section */}
           <div className="bg-white text-black mt-10">
@@ -83,7 +81,7 @@ export default function Admin() {
               {products.map((product, index) => (
                 <motion.div
                   key={product._id || index}
-                  className="rounded-md overflow-hidden border border-gray-300 shadow hover:shadow-lg transition-shadow duration-300 bg-white flex flex-col"
+                  className="rounded-xl overflow-hidden border border-gray-200 hover:shadow-md transition-all duration-300 bg-white flex flex-col"
                   initial={{ opacity: 0, y: 80 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.15 }}
@@ -105,7 +103,7 @@ export default function Admin() {
               ))}
             </div>
           </div>
-        </main>
+        </div>
 
         {isModalOpen && (
           <Modal
