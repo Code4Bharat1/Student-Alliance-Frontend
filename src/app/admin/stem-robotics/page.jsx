@@ -73,7 +73,7 @@ export default function Admin() {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <h1 className="text-4xl font-bold">STEM & Robotics</h1>
+              <h1 className="text-4xl font-bold">IFPD Panels</h1>
             </motion.div>
 
             {/* Product Cards */}
