@@ -65,11 +65,11 @@ export default function Header({ onAddProduct }) {
 
           {/* User Profile Icon */}
           <motion.div whileHover={{ scale: 1.1 }}>
-            {/* <Link href={'/admin/form'}> */}
+            <Link href={'/profile'}>
               <button className="p-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md">
                 <UserIcon className="h-6 w-6" />
               </button>
-            {/* </Link> */}
+            </Link>
           </motion.div>
         </div>
       </div>
