@@ -18,7 +18,7 @@ export default function OTP() {
   useEffect(() => {
     setIsMounted(true);
     return () => setIsMounted(false);
-  }, []);
+  }, []);      
 
   useEffect(() => {
     let timer;
@@ -73,7 +73,7 @@ export default function OTP() {
         }
       );
       toast.success("OTP verified successfully!");
-      router.push('/admin/UpdatePass?email=' + email);
+      router.push('/UpdatePass?email=' + email);
       // Optionally redirect here
     } catch (err) {
       alert(
