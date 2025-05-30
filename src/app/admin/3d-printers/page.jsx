@@ -68,13 +68,15 @@ export default function Admin() {
           <div className="relative p-6 bg-white rounded-xl shadow-lg border border-gray-100">
             {/* Category Header */}
             <motion.div
-              className="text-center py-5"
+              className="text-center py-0"
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <h1 className="text-4xl font-bold">IFPD Panels</h1>
+              <h1 className="text-4xl mb-14 font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                3D Printers
+              </h1>
             </motion.div>
 
             {/* Product Cards */}

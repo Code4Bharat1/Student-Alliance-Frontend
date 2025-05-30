@@ -67,13 +67,15 @@ export default function Admin() {
           <div className="bg-white text-black mt-10">
             {/* Header */}
             <motion.div
-              className="text-center py-5"
+              className="text-center py-0"
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <h1 className="text-4xl font-bold">IFPD Panels</h1>
+              <h1 className="text-4xl mb-14 font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                STEM & Robotics
+              </h1>
             </motion.div>
 
             {/* Product Cards */}

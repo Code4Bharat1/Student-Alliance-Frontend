@@ -44,11 +44,7 @@ export default function Sidebar() {
 
   const productSubItems = [
     { name: "Camera", icon: <AiOutlineDashboard />, path: "camera" },
-    {
-      name: "Digital Board",
-      icon: <AiOutlineDashboard />,
-      path: "digital_board",
-    },
+    { name: "Digital Board", icon: <AiOutlineDashboard />, path: "digital_board" },
     { name: "Mic", icon: <AiOutlineDashboard />, path: "mic" },
     { name: "Cable", icon: <AiOutlineDashboard />, path: "cable" },
     { name: "Speaker", icon: <AiOutlineDashboard />, path: "speaker" },
@@ -92,13 +88,13 @@ export default function Sidebar() {
           {isCollapsed ? (
             <AiOutlineMenuUnfold size={20} />
           ) : (
-            <AiOutlineMenuFold size={20} />
+            <AiOutlineMenuFold size={20} /> 
           )}
         </button>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 flex flex-col p-4 space-y-2 overflow-y-auto">
+      <nav className="flex-1 flex flex-col p-4 space-y-2 overflow-y-auto custom-scrollbar">
         {menuItems.map((item, index) => (
           <Link
             key={index}
@@ -158,22 +154,12 @@ export default function Sidebar() {
           <AnimatePresence initial={false}>
             {!isCollapsed && productsOpen && (
               <motion.div
-                className="pl-10 mt-1 space-y-1 overflow-auto"
-                style={{
-                  maxHeight: 200,
-                  scrollbarWidth: "none",
-                  msOverflowStyle: "none",
-                }}
+                className="pl-10 mt-1 space-y-1 overflow-y-auto max-h-48 custom-scrollbar"
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
               >
-                <style jsx>{`
-                  div::-webkit-scrollbar {
-                    display: none;
-                  }
-                `}</style>
                 {productSubItems.map((subItem, idx) => (
                   <Link
                     key={idx}
@@ -219,6 +205,27 @@ export default function Sidebar() {
           )}
         </motion.div>
       </div>
+
+      {/* Scrollbar style */}
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background-color: rgba(251, 191, 36, 0.7); /* amber-400 */
+          border-radius: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        .custom-scrollbar {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(251, 191, 36, 0.7) transparent;
+        }
+      `}</style>
     </motion.aside>
   );
 }
