@@ -7,12 +7,16 @@ import { motion } from "framer-motion";
 import Sidebar from "@/components/Sidebar";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+useRouter
 
 export default function Admin() {
   const [products, setProducts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -61,9 +65,9 @@ export default function Admin() {
   return (
     <>
       <div className="flex h-screen">
-       
+
         <main className="flex-1 p-8 overflow-y-auto">
-        
+
 
           {/* Products Section */}
           <div className="bg-white text-black mt-10">
@@ -88,6 +92,10 @@ export default function Admin() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.15 }}
                   viewport={{ once: true }}
+                  onClick={() => {
+
+                    router.push(`/admin/ProductDetails/${product._id}`);
+                  }}
                 >
                   <div className="relative w-full aspect-[4/3] bg-white">
                     <Image

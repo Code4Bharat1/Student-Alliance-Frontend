@@ -59,13 +59,12 @@ export default function Admin() {
   };
 
   return (
-    <>
-      <div className="flex h-screen">
-        <div className="flex-1 p-6 overflow-y-auto ml-64"> 
-
+    <div className="flex min-h-screen">
+      <div className="flex-1 ml-64 transition-all duration-300">
+        <div className="p-6">
           {/* Products Section */}
-          <div className="bg-white text-black mt-10">
-            {/* Header */}
+          <div className="relative p-6 bg-white rounded-xl shadow-lg border border-gray-100">
+            {/* Category Header */}
             <motion.div
               className="text-center py-0"
               initial={{ opacity: 0, y: 40 }}
@@ -79,7 +78,7 @@ export default function Admin() {
             </motion.div>
 
             {/* Product Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-6 pb-16">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {products.map((product, index) => (
                 <motion.div
                   key={product._id || index}
@@ -88,22 +87,46 @@ export default function Admin() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.15 }}
                   viewport={{ once: true }}
+                  whileHover={{ y: -5 }}
                 >
-                  <div className="relative w-full aspect-[4/3] bg-white">
+                  <div className="relative w-full aspect-[4/3] bg-gray-50">
                     <Image
-                      src={product.image}
+                      src={product.image || "/placeholder-product.jpg"}
                       alt={product.name}
                       fill
-                      className="object-contain p-2"
+                      className="object-contain p-4"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                   </div>
-                  <div className="p-4 text-center font-semibold text-sm flex-grow">
-                    {product.name}
+                  <div className="p-4 flex-grow">
+                    <h3 className="text-sm font-medium text-gray-900">
+                      {product.name}
+                    </h3>
+                    {product.category && (
+                      <div className="text-xs text-gray-500 mt-1">
+                        {product.category}
+                      </div>
+                    )}
+                    <div className="mt-3 flex justify-between items-center">
+                      <span className="px-2 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
+                        ₹{product.price?.toLocaleString()}
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        {product.quantity?.toLocaleString()} in stock
+                      </span>
+                    </div>
                   </div>
-                  {/* Add more product details/buttons as needed */}
                 </motion.div>
               ))}
             </div>
+
+            {/* Product Count */}
+            {products.length > 0 && !loading && (
+              <div className="mt-4 text-sm text-gray-500">
+                Showing {products.length}{" "}
+                {products.length === 1 ? "product" : "products"}
+              </div>
+            )}
           </div>
         </div>
 
@@ -115,6 +138,6 @@ export default function Admin() {
           />
         )}
       </div>
-    </>
+    </div>
   );
 }

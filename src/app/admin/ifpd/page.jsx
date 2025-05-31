@@ -7,12 +7,16 @@ import { motion } from "framer-motion";
 import Sidebar from "@/components/Sidebar";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+useRouter
 
 export default function Admin() {
   const [products, setProducts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -89,6 +93,10 @@ export default function Admin() {
                   transition={{ duration: 0.5, delay: index * 0.15 }}
                   viewport={{ once: true }}
                   whileHover={{ y: -5 }}
+                  onClick={() => {
+
+                 router.push(`/admin/ProductDetails/${product._id}`);
+                  }}
                 >
                   <div className="relative w-full aspect-[4/3] bg-gray-50">
                     <Image

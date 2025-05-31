@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 
 export default function Modal({ product, onClose, onSave }) {
   const [formData, setFormData] = useState({
@@ -110,8 +111,8 @@ export default function Modal({ product, onClose, onSave }) {
       return;
     }
 
-    if (!formData.name || !formData.price || !formData.image) {
-      alert("Please fill in all required fields: name, price, and image.");
+    if (!formData.name || !formData.price || !formData.image || !formData.category) {
+      toast.error("Please fill in all required fields: name, price, image, and category.");
       return;
     }
 
