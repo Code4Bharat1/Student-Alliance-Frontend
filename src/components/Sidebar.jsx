@@ -53,7 +53,7 @@ export default function Sidebar() {
     { name: "OPS", icon: <AiOutlineDashboard />, path: "ops" },
   ];
 
-  const toggleSidebar = () => setIsCollapsed(!isCollapsed);
+  // const toggleSidebar = () => setIsCollapsed(!isCollapsed);
 
   const handleLogout = () => {
     dispatch(logout()); // This will clear token, user, and isAuthenticated in Redux and localStorage
@@ -81,7 +81,7 @@ export default function Sidebar() {
             Admin Panel
           </motion.h1>
         )}
-        <button
+        {/* <button
           onClick={toggleSidebar}
           className="p-2 rounded-full hover:bg-gray-700 text-amber-400 transition-colors"
         >
@@ -90,7 +90,7 @@ export default function Sidebar() {
           ) : (
             <AiOutlineMenuFold size={20} /> 
           )}
-        </button>
+        </button> */}
       </div>
 
       {/* Navigation */}
