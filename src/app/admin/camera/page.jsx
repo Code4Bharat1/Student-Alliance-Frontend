@@ -74,7 +74,6 @@ export default function Admin() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-
             >
               <h1 className="text-4xl mb-14 font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                 Camera
@@ -130,8 +129,7 @@ export default function Admin() {
             {/* Product Count */}
             {products.length > 0 && !loading && (
               <div className="mt-4 text-sm text-gray-500">
-                Showing{" "}
-                {products.length}{" "}
+                Showing {products.length}{" "}
                 {products.length === 1 ? "product" : "products"}
               </div>
             )}
