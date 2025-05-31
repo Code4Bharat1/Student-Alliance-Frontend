@@ -9,7 +9,6 @@ import ProductTable from "@/components/ProductTable";
 import { PencilIcon } from "@heroicons/react/24/outline";
 
 export default function AdminDashboard(props) {
-  // Receive products, onEditProduct, onDeleteProduct from layout via props
   const { products, onEditProduct, onDeleteProduct, isLoading } = props;
   const router = useRouter();
   const { isAuthenticated, token } = useSelector((state) => state.auth);
@@ -17,11 +16,10 @@ export default function AdminDashboard(props) {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
-    // Check Redux first, fallback to localStorage for hard reloads
     const localToken =
       typeof window !== "undefined" ? localStorage.getItem("token") : null;
     if (!isAuthenticated && !token && !localToken) {
-      router.replace("/form"); // Redirect to login
+      router.replace("/form");
     }
   }, [isAuthenticated, token, router]);
 
