@@ -113,7 +113,7 @@ export default function ProductDetail({ params }) {
           <motion.div
             animate={{
               scale: [1, 1.1, 1],
-              rotate: [0, 5, -5, 0],
+              
             }}
             transition={{
               duration: 1.5,
@@ -164,8 +164,6 @@ export default function ProductDetail({ params }) {
         >
           <motion.div 
             animate={{ 
-              scale: [1, 1.05, 1],
-              rotate: [0, 5, -5, 0]
             }}
             transition={{ duration: 0.5 }}
             className="text-red-500 mb-4"
