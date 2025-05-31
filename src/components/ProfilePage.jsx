@@ -33,7 +33,7 @@ const ProfilePage = () => {
     name: 'Shubham Thakare',
     email: 'shubham444@gmail.com',
     role: 'Super Admin',
-    joinDate: 'Joined May 2022',
+    // joinDate: 'Joined May 2022',
     stats: {
       totalUsers: 1243,
       activeProjects: 28,
