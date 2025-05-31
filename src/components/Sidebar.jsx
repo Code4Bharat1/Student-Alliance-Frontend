@@ -4,9 +4,9 @@ import {
   AiOutlineDashboard,
   AiOutlineTool,
   AiOutlineRobot,
-  AiOutlineMenuFold,
-  AiOutlineMenuUnfold,
+
 } from "react-icons/ai";
+import { MdOutlineShoppingCart } from "react-icons/md";
 import { MdTv } from "react-icons/md";
 import { FiPackage, FiLogOut } from "react-icons/fi";
 import { IoIosArrowDown } from "react-icons/io";
@@ -38,6 +38,7 @@ export default function Sidebar() {
       icon: <AiOutlineRobot />,
       path: "stem-robotics",
     },
+   { name: "Orders", icon: <MdOutlineShoppingCart />, path: "orders" },
   ];
 
   const router = useRouter();
