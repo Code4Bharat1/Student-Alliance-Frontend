@@ -167,7 +167,7 @@ const OrdersPage = () => {
           </span>
         </Link>
         <Link
-          href="/admin/dashboard"
+          href="/admin/customers"
           className="flex items-center px-4 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
         >
           Customers
