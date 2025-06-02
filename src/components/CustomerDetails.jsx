@@ -1,7 +1,6 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState } from 'react';
 
 const CustomersPage = () => {
   // Sample customer data - replace with your actual data from API
@@ -63,36 +62,35 @@ const CustomersPage = () => {
     },
   ]);
 
+  const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+
+  // Filter customers based on search term
+  const filteredCustomers = customers.filter(customer =>
+    customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    customer.phone.includes(searchTerm)
+  );
 
   // Sort customers
   const sortedCustomers = [...filteredCustomers].sort((a, b) => {
     if (sortConfig.key) {
       if (a[sortConfig.key] < b[sortConfig.key]) {
-        return sortConfig.direction === "asc" ? -1 : 1;
+        return sortConfig.direction === 'asc' ? -1 : 1;
       }
       if (a[sortConfig.key] > b[sortConfig.key]) {
-        return sortConfig.direction === "asc" ? 1 : -1;
+        return sortConfig.direction === 'asc' ? 1 : -1;
       }
     }
     return 0;
   });
 
   const requestSort = (key) => {
-    let direction = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
     }
     setSortConfig({ key, direction });
-  };
-
-  // Helper to get status based on updatedAt
-  const getStatus = (updatedAt) => {
-    if (!updatedAt) return "Inactive";
-    const lastUpdate = new Date(updatedAt);
-    const now = new Date();
-    const diffYears = (now - lastUpdate) / (1000 * 60 * 60 * 24 * 365);
-    return diffYears >= 1 ? "Inactive" : "Active";
   };
 
   return (
@@ -108,7 +106,7 @@ const CustomersPage = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <svg
-            className="absolute left-3 top-2.5 h-5 w-5 text-gray-700"
+            className="absolute left-3 top-2.5 h-5 w-5 text-gray-600"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -126,69 +124,69 @@ const CustomersPage = () => {
 
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <div className="grid grid-cols-12 bg-gray-100 p-4 font-medium text-gray-700">
-          <div
+          <div 
             className="col-span-3 flex items-center cursor-pointer"
-            onClick={() => requestSort("name")}
+            onClick={() => requestSort('name')}
           >
             Customer
-            {sortConfig.key === "name" && (
+            {sortConfig.key === 'name' && (
               <span className="ml-1">
-                {sortConfig.direction === "asc" ? "↑" : "↓"}
+                {sortConfig.direction === 'asc' ? '↑' : '↓'}
               </span>
             )}
           </div>
-          <div
+          <div 
             className="col-span-2 flex items-center cursor-pointer"
-            onClick={() => requestSort("accountCreated")}
+            onClick={() => requestSort('accountCreated')}
           >
             Account Created
-            {sortConfig.key === "accountCreated" && (
+            {sortConfig.key === 'accountCreated' && (
               <span className="ml-1">
-                {sortConfig.direction === "asc" ? "↑" : "↓"}
+                {sortConfig.direction === 'asc' ? '↑' : '↓'}
               </span>
             )}
           </div>
-          <div
+          <div 
             className="col-span-1 flex items-center cursor-pointer"
-            onClick={() => requestSort("totalOrders")}
+            onClick={() => requestSort('totalOrders')}
           >
             Orders
-            {sortConfig.key === "totalOrders" && (
+            {sortConfig.key === 'totalOrders' && (
               <span className="ml-1">
-                {sortConfig.direction === "asc" ? "↑" : "↓"}
+                {sortConfig.direction === 'asc' ? '↑' : '↓'}
               </span>
             )}
           </div>
-          <div
+          <div 
             className="col-span-2 flex items-center cursor-pointer"
-            onClick={() => requestSort("totalRevenue")}
+            onClick={() => requestSort('totalRevenue')}
           >
-            Total Collection
-            {sortConfig.key === "totalRevenue" && (
+            Total Revenue
+            {sortConfig.key === 'totalRevenue' && (
               <span className="ml-1">
-                {sortConfig.direction === "asc" ? "↑" : "↓"}
+                {sortConfig.direction === 'asc' ? '↑' : '↓'}
               </span>
             )}
           </div>
-          <div
+          <div 
             className="col-span-2 flex items-center cursor-pointer"
-            onClick={() => requestSort("lastOrder")}
+            onClick={() => requestSort('lastOrder')}
           >
             Last Order
-            {sortConfig.key === "lastOrder" && (
+            {sortConfig.key === 'lastOrder' && (
               <span className="ml-1">
-                {sortConfig.direction === "asc" ? "↑" : "↓"}
+                {sortConfig.direction === 'asc' ? '↑' : '↓'}
               </span>
             )}
           </div>
-          <div
+          <div 
             className="col-span-1 flex items-center cursor-pointer"
-            onClick={() => requestSort("status")}
+            onClick={() => requestSort('status')}
           >
             Status
-            {sortConfig.key === "status" && (
+            {sortConfig.key === 'status' && (
               <span className="ml-1">
-                {sortConfig.direction === "asc" ? "↑" : "↓"}
+                {sortConfig.direction === 'asc' ? '↑' : '↓'}
               </span>
             )}
           </div>
@@ -196,93 +194,86 @@ const CustomersPage = () => {
         </div>
 
         {sortedCustomers.length > 0 ? (
-          sortedCustomers.map((customer) => {
-            const status = getStatus(customer.updatedAt);
-            return (
-              <div
-                key={customer._id}
-                className="grid grid-cols-12 p-4 border-b border-gray-200 hover:bg-gray-50"
-              >
-                <div className="col-span-3 flex items-center">
-                  <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
-                    {customer.name.charAt(0)}
-                  </div>
-                  <div className="ml-4">
-                    <p className="font-medium text-gray-900">{customer.name}</p>
-                    <p className="text-sm text-gray-500">{customer.email}</p>
-                    <p className="text-sm text-gray-500">{customer.phone}</p>
-                  </div>
+          sortedCustomers.map((customer) => (
+            <div
+              key={customer.id}
+              className="grid grid-cols-12 p-4 border-b border-gray-200 hover:bg-gray-50"
+            >
+              <div className="col-span-3 flex items-center">
+                <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+                  {customer.name.charAt(0)}
                 </div>
-                <div className="col-span-2 flex items-center text-gray-700">
-                  {customer.createdAt
-                    ? new Date(customer.createdAt).toLocaleDateString("en-IN")
-                    : "N/A"}
-                </div>
-                <div className="col-span-1 flex items-center text-gray-700">
-                  {customer.totalOrders}
-                </div>
-                <div className="col-span-2 flex items-center font-medium text-green-600">
-                  {customer.totalRevenue}
-                </div>
-                <div className="col-span-2 flex items-center text-gray-700">
-                  {customer.lastOrder
-                    ? new Date(customer.lastOrder).toLocaleDateString("en-IN")
-                    : "N/A"}
-                </div>
-                <div className="col-span-1 flex items-center">
-                  <span
-                    className={`px-2 py-1 text-xs rounded-full ${
-                      status === "Active"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {status}
-                  </span>
-                </div>
-                <div className="col-span-1 flex items-center justify-end">
-                  <button className="text-blue-600 hover:text-blue-800 mr-3">
-                    <svg
-                      className="h-5 w-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
-                    </svg>
-                  </button>
-                  <button className="text-gray-600 hover:text-gray-800">
-                    <svg
-                      className="h-5 w-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
-                  </button>
+                <div className="ml-4">
+                  <p className="font-medium text-gray-900">{customer.name}</p>
+                  <p className="text-sm text-gray-500">{customer.email}</p>
+                  <p className="text-sm text-gray-500">{customer.phone}</p>
                 </div>
               </div>
-            );
-          })
+              <div className="col-span-2 flex items-center text-gray-700">
+                {new Date(customer.accountCreated).toLocaleDateString('en-IN')}
+              </div>
+              <div className="col-span-1 flex items-center text-gray-700">
+                {customer.totalOrders}
+              </div>
+              <div className="col-span-2 flex items-center font-medium text-green-600">
+                {customer.totalRevenue}
+              </div>
+              <div className="col-span-2 flex items-center text-gray-700">
+                {new Date(customer.lastOrder).toLocaleDateString('en-IN')}
+              </div>
+              <div className="col-span-1 flex items-center">
+                <span
+                  className={`px-2 py-1 text-xs rounded-full ${
+                    customer.status === 'Active'
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-red-100 text-red-800'
+                  }`}
+                >
+                  {customer.status}
+                </span>
+              </div>
+              <div className="col-span-1 flex items-center justify-end">
+                <button className="text-blue-600 hover:text-blue-800 mr-3">
+                  <svg
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    />
+                  </svg>
+                </button>
+                <button className="text-gray-600 hover:text-gray-800">
+                  <svg
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          ))
         ) : (
           <div className="p-8 text-center text-gray-500">
             No customers found matching your search criteria.
@@ -293,15 +284,12 @@ const CustomersPage = () => {
       {/* Pagination */}
       <div className="flex justify-between items-center mt-6">
         <div className="text-sm text-gray-700">
-          Showing <span className="font-medium">1</span> to{" "}
-          <span className="font-medium">5</span> of{" "}
+          Showing <span className="font-medium">1</span> to{' '}
+          <span className="font-medium">5</span> of{' '}
           <span className="font-medium">{customers.length}</span> customers
         </div>
         <div className="flex space-x-2">
-          <button
-            className="px-3 py-1 border rounded-md bg-white text-gray-700 disabled:opacity-50"
-            disabled
-          >
+          <button className="px-3 py-1 border rounded-md bg-white text-gray-700 disabled:opacity-50" disabled>
             Previous
           </button>
           <button className="px-3 py-1 border rounded-md bg-white text-gray-700">
