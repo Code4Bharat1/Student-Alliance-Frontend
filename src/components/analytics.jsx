@@ -32,16 +32,17 @@ const AnalyticsDashboard = () => {
   ];
 
   const topProducts = [
-    { name: 'Product A', value: 400 },
-    { name: 'Product B', value: 300 },
-    { name: 'Product C', value: 200 },
-    { name: 'Product D', value: 100 },
+    { name: 'IFPD', value: 400 },
+    { name: '3D Printers', value: 300 },
+    { name: 'Stem and Robotics', value: 200 },
+    { name: 'Cables', value: 100 },
+    { name: 'Others', value: 100 },
   ];
 
   const revenueByCategory = [
     { name: 'IFPD', revenue: 120000 },
     { name: 'Camers', revenue: 85000 },
-    { name: 'Stem & Robotics', revenue: 65000 },
+    { name: 'Stem', revenue: 65000 },
     { name: 'Stands', revenue: 35000 },
     { name: 'Mic', revenue: 45000 },
   ];
@@ -69,7 +70,7 @@ const AnalyticsDashboard = () => {
   };
 
   return (
-    <div className="p-6 ml-64 bg-gray-50 min-h-screen">
+    <div className="p-6 text-black ml-64 bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Analytics Dashboard</h1>
       </div>
