@@ -581,7 +581,7 @@ const OrdersPage = () => {
                     disabled={currentPage === totalPages}
                     className={`px-3 py-1 text-sm rounded-md ₹{
                       currentPage === totalPages
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        ? 'bg-gray-100 cursor-not-allowed'
                         : 'bg-white text-gray-700 hover:bg-gray-50'
                     }`}
                   >
