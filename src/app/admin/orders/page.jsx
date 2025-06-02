@@ -1,98 +1,116 @@
 "use client";
 
-import { useState } from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import Head from "next/head";
+import Link from "next/link";
+import axios from "axios";
 
 const OrdersPage = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 7;
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/orders");
+        setOrders(res.data);
+        console.log(res.data);
+      } catch (err) {
+        console.error("Failed to fetch orders:", err);
+      }
+    };
+    fetchOrders();
+  }, []);
 
   // Sample orders data
-  const orders = [
-    {
-      id: 'EC-1001',
-      customer: 'John Smith',
-      date: 'May 15, 2023',
-      amount: 245.99,
-      status: 'delivered',
-      items: 3,
-    },
-    {
-      id: 'EC-1002',
-      customer: 'Sarah Johnson',
-      date: 'May 16, 2023',
-      amount: 189.5,
-      status: 'shipped',
-      items: 2,
-    },
-    {
-      id: 'EC-1003',
-      customer: 'Michael Brown',
-      date: 'May 17, 2023',
-      amount: 320.75,
-      status: 'processing',
-      items: 5,
-    },
-    {
-      id: 'EC-1004',
-      customer: 'Emily Davis',
-      date: 'May 18, 2023',
-      amount: 145.2,
-      status: 'pending',
-      items: 1,
-    },
-    {
-      id: 'EC-1005',
-      customer: 'Robert Wilson',
-      date: 'May 19, 2023',
-      amount: 89.99,
-      status: 'cancelled',
-      items: 2,
-    },
-    {
-      id: 'EC-1006',
-      customer: 'Jennifer Lee',
-      date: 'May 20, 2023',
-      amount: 210.45,
-      status: 'delivered',
-      items: 4,
-    },
-    {
-      id: 'EC-1007',
-      customer: 'David Miller',
-      date: 'May 21, 2023',
-      amount: 175.3,
-      status: 'shipped',
-      items: 3,
-    },
-    {
-      id: 'EC-1008',
-      customer: 'Lisa Taylor',
-      date: 'May 22, 2023',
-      amount: 299.99,
-      status: 'processing',
-      items: 2,
-    },
-    {
-      id: 'EC-1009',
-      customer: 'James Anderson',
-      date: 'May 23, 2023',
-      amount: 150.0,
-      status: 'pending',
-      items: 1,
-    },
-  ];
+  // const orders = [
+  //   {
+  //     id: 'EC-1001',
+  //     customer: 'John Smith',
+  //     date: 'May 15, 2023',
+  //     amount: 245.99,
+  //     status: 'delivered',
+  //     items: 3,
+  //   },
+  //   {
+  //     id: 'EC-1002',
+  //     customer: 'Sarah Johnson',
+  //     date: 'May 16, 2023',
+  //     amount: 189.5,
+  //     status: 'shipped',
+  //     items: 2,
+  //   },
+  //   {
+  //     id: 'EC-1003',
+  //     customer: 'Michael Brown',
+  //     date: 'May 17, 2023',
+  //     amount: 320.75,
+  //     status: 'processing',
+  //     items: 5,
+  //   },
+  //   {
+  //     id: 'EC-1004',
+  //     customer: 'Emily Davis',
+  //     date: 'May 18, 2023',
+  //     amount: 145.2,
+  //     status: 'pending',
+  //     items: 1,
+  //   },
+  //   {
+  //     id: 'EC-1005',
+  //     customer: 'Robert Wilson',
+  //     date: 'May 19, 2023',
+  //     amount: 89.99,
+  //     status: 'cancelled',
+  //     items: 2,
+  //   },
+  //   {
+  //     id: 'EC-1006',
+  //     customer: 'Jennifer Lee',
+  //     date: 'May 20, 2023',
+  //     amount: 210.45,
+  //     status: 'delivered',
+  //     items: 4,
+  //   },
+  //   {
+  //     id: 'EC-1007',
+  //     customer: 'David Miller',
+  //     date: 'May 21, 2023',
+  //     amount: 175.3,
+  //     status: 'shipped',
+  //     items: 3,
+  //   },
+  //   {
+  //     id: 'EC-1008',
+  //     customer: 'Lisa Taylor',
+  //     date: 'May 22, 2023',
+  //     amount: 299.99,
+  //     status: 'processing',
+  //     items: 2,
+  //   },
+  //   {
+  //     id: 'EC-1009',
+  //     customer: 'James Anderson',
+  //     date: 'May 23, 2023',
+  //     amount: 150.0,
+  //     status: 'pending',
+  //     items: 1,
+  //   },
+  // ];
 
   // Filter orders based on search and status
   const filteredOrders = orders.filter((order) => {
     const matchesSearch =
-      order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.customer.toLowerCase().includes(searchQuery.toLowerCase());
+      order._id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.customerDetails?.name
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      order.customer?.name?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus =
-      statusFilter === 'all' || order.status === statusFilter;
+      statusFilter === "all" || order.orderStatus === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
@@ -105,24 +123,24 @@ const OrdersPage = () => {
   );
   const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
 
- // Status badge component
-const StatusBadge = ({ status }) => {
-  const statusClasses = {
-    pending: 'bg-yellow-100 text-yellow-800',
-    processing: 'bg-blue-100 text-blue-800',
-    shipped: 'bg-green-100 text-green-800',
-    delivered: 'bg-purple-100 text-purple-800',
-    cancelled: 'bg-red-100 text-red-800',
+  // Status badge component
+  const StatusBadge = ({ status }) => {
+    const statusClasses = {
+      pending: "bg-yellow-100 text-yellow-800",
+      processing: "bg-blue-100 text-blue-800",
+      shipped: "bg-green-100 text-green-800",
+      delivered: "bg-purple-100 text-purple-800",
+      cancelled: "bg-red-100 text-red-800",
+    };
+    const normalized = status?.toLowerCase() || "pending";
+    return (
+      <span
+        className={`px-2 py-1 text-xs font-medium rounded-full ${statusClasses[normalized]}`}
+      >
+        {status.charAt(0).toUpperCase() + status.slice(1)}
+      </span>
+    );
   };
-
-  return (
-    <span
-      className={`px-2 py-1 text-xs font-medium rounded-full ${statusClasses[status]}`}
-    >
-      {status.charAt(0).toUpperCase() + status.slice(1)}
-    </span>
-  );
-};
 
   return (
     <div className="min-h-screen ml-64 bg-gray-50">
@@ -170,10 +188,7 @@ const StatusBadge = ({ status }) => {
 
       {/* Main content */}
       <div className="flex flex-col flex-1 overflow-hidden">
-
-              {/* Search Bar and Filters Code :- */}
-
-       
+        {/* Search Bar and Filters Code :- */}
 
         {/* Stats cards */}
         <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 lg:grid-cols-4">
@@ -232,7 +247,10 @@ const StatusBadge = ({ status }) => {
                   Revenue
                 </p>
                 <p className="mt-1 text-3xl font-semibold text-gray-900">
-                  ₹{orders.reduce((sum, order) => sum + order.amount, 0).toFixed(2)}
+                  ₹
+                  {orders
+                    .reduce((sum, order) => sum + order.amount, 0)
+                    .toFixed(2)}
                 </p>
               </div>
               <div className="p-3 text-green-600 bg-green-100 rounded-full">
@@ -280,7 +298,11 @@ const StatusBadge = ({ status }) => {
                   Avg. Order Value
                 </p>
                 <p className="mt-1 text-3xl font-semibold text-gray-900">
-                  ₹{(orders.reduce((sum, order) => sum + order.amount, 0) / orders.length).toFixed(2)}
+                  ₹
+                  {(
+                    orders.reduce((sum, order) => sum + order.amount, 0) /
+                    orders.length
+                  ).toFixed(2)}
                 </p>
               </div>
               <div className="p-3 text-yellow-600 bg-yellow-100 rounded-full">
@@ -328,7 +350,7 @@ const StatusBadge = ({ status }) => {
                   Pending Orders
                 </p>
                 <p className="mt-1 text-3xl font-semibold text-gray-900">
-                  {orders.filter((order) => order.status === 'pending').length}
+                  {orders.filter((order) => order.status === "pending").length}
                 </p>
               </div>
               <div className="p-3 text-red-600 bg-red-100 rounded-full">
@@ -424,46 +446,52 @@ const StatusBadge = ({ status }) => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {currentOrders.length > 0 ? (
                     currentOrders.map((order) => (
-                      <tr key={order.id}>
+                      <tr key={order._id}>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm font-medium text-gray-900">
-                            {order.id}
+                            {order._id}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">
-                            {order.customer}
+                            {order.customerDetails?.name ||
+                              order.customer?.name ||
+                              "N/A"}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-500">
-                            {order.date}
+                            {order.orderDate
+                              ? new Date(order.orderDate).toLocaleDateString()
+                              : "N/A"}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm font-medium text-gray-900">
-                            ₹{order.amount.toFixed(2)}
+                            ₹{order.total?.toFixed(2) || "0.00"}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <StatusBadge status={order.status} />
+                          <StatusBadge
+                            status={
+                              order.orderStatus?.toLowerCase() || "pending"
+                            }
+                          />
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-500">
-                            {order.items}
+                            {order.items?.length || 0}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <button
-                            onClick={() =>
-                              alert(`Viewing order ₹{order.id}`)
-                            }
+                            onClick={() => alert(`Viewing order ₹{order.id}`)}
                             className="mr-2 text-indigo-600 hover:text-indigo-900"
                           >
                             View
                           </button>
-                          {order.status !== 'delivered' &&
-                            order.status !== 'cancelled' && (
+                          {order.status !== "delivered" &&
+                            order.status !== "cancelled" && (
                               <button
                                 onClick={() =>
                                   alert(`Editing order ₹{order.id}`)
@@ -507,24 +535,25 @@ const StatusBadge = ({ status }) => {
             {filteredOrders.length > ordersPerPage && (
               <div className="flex items-center justify-between px-6 py-3 bg-gray-50">
                 <div className="text-sm text-gray-500">
-                  Showing{' '}
-                  <span className="font-medium">
-                    {indexOfFirstOrder + 1}
-                  </span>{' '}
-                  to{' '}
+                  Showing{" "}
+                  <span className="font-medium">{indexOfFirstOrder + 1}</span>{" "}
+                  to{" "}
                   <span className="font-medium">
                     {Math.min(indexOfLastOrder, filteredOrders.length)}
-                  </span>{' '}
-                  of <span className="font-medium">{filteredOrders.length}</span>{' '}
+                  </span>{" "}
+                  of{" "}
+                  <span className="font-medium">{filteredOrders.length}</span>{" "}
                   results
                 </div>
                 <div className="flex space-x-2">
                   <button
-                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(prev - 1, 1))
+                    }
                     disabled={currentPage === 1}
                     className={`px-3 py-1 text-sm rounded-md ₹{
                       currentPage === 1
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        ? 'bg-gray-100  cursor-not-allowed'
                         : 'bg-white text-gray-700 hover:bg-gray-50'
                     }`}
                   >
@@ -552,7 +581,7 @@ const StatusBadge = ({ status }) => {
                     disabled={currentPage === totalPages}
                     className={`px-3 py-1 text-sm rounded-md ₹{
                       currentPage === totalPages
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        ? 'bg-gray-100 cursor-not-allowed'
                         : 'bg-white text-gray-700 hover:bg-gray-50'
                     }`}
                   >
