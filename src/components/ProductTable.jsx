@@ -15,6 +15,7 @@ export default function ProductTable({ onEdit }) {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState(""); // <-- Add this line
 
   const router = useRouter();
 
@@ -25,10 +26,6 @@ export default function ProductTable({ onEdit }) {
         const res = await axios.get("http://localhost:5000/api/products");
         setProducts(res.data);
         if (!res.data || res.data.length === 0) {
-          console.warn("No products found in the database.");
-        }
-
-        if (FormData.length === 0) {
           console.warn("No products found in the database.");
         }
       } catch (error) {
@@ -47,6 +44,12 @@ export default function ProductTable({ onEdit }) {
       window.removeEventListener("productAdded", handleProductAdded);
     };
   }, []);
+
+  // Filter products based on search term
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (product.category && product.category.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   const handleDelete = async (id) => {
     const productToDelete = products.find((p) => p._id === id);
@@ -78,6 +81,32 @@ export default function ProductTable({ onEdit }) {
 
   return (
     <div className="ml-64 p-6 transition-all duration-300">
+      <div className="mb-6 flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-gray-800">Products</h1>
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search products..."
+            className="pl-10 text-black pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <svg
+            className="absolute left-3 top-2.5 h-5 w-5 text-gray-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+        </div>
+      </div>
       <div className="relative bg-white rounded-xl shadow-lg border border-gray-100">
         <AnimatePresence>
           {confirmDeleteId && (
@@ -157,17 +186,17 @@ export default function ProductTable({ onEdit }) {
                     </div>
                   </td>
                 </tr>
-              ) : products.length === 0 ? (
+              ) : filteredProducts.length === 0 ? (
                 <tr>
                   <td
                     colSpan="5"
                     className="px-6 py-12 text-center text-gray-500"
                   >
-                    No products found. Add your first product!
+                    No products found. Try a different search!
                   </td>
                 </tr>
               ) : (
-                products.map((product, index) => (
+                filteredProducts.map((product, index) => (
                   <motion.tr
                     key={product._id}
                     custom={index}
@@ -254,11 +283,10 @@ export default function ProductTable({ onEdit }) {
             </tbody>
           </table>
         </div>
-
-        {products.length > 0 && !isLoading && (
+        {filteredProducts.length > 0 && !isLoading && (
           <div className="mt-4 text-sm text-gray-500 p-4">
-            Showing {products.length}{" "}
-            {products.length === 1 ? "product" : "products"}
+            Showing {filteredProducts.length}{" "}
+            {filteredProducts.length === 1 ? "product" : "products"}
           </div>
         )}
       </div>
