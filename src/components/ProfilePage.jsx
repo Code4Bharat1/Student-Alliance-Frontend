@@ -25,6 +25,7 @@ const ProfilePage = () => {
   const [showImageUpload, setShowImageUpload] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const fileInputRef = useRef(null);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -42,7 +43,6 @@ const ProfilePage = () => {
     name: "Shubham Thakare",
     email: "shubham444@gmail.com",
     role: "Super Admin",
-    // joinDate: 'Joined May 2022',
     stats: {
       totalUsers: 1243,
       activeProjects: 28,
@@ -60,6 +60,14 @@ const ProfilePage = () => {
   const handleLogout = () => {
     dispatch(logout());
     router.push("/");
+  };
+
+  const handleLogoutClick = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const handleCancelLogout = () => {
+    setShowLogoutConfirm(false);
   };
 
   const handleAvatarClick = () => {
@@ -83,8 +91,6 @@ const ProfilePage = () => {
   const handleUpload = () => {
     if (!selectedFile) return;
 
-    // Here you would typically upload to your backend
-    // For demo purposes, we'll just update the local state
     setAvatar(previewUrl);
     setShowImageUpload(false);
     setSelectedFile(null);
@@ -195,6 +201,47 @@ const ProfilePage = () => {
                     Upload Picture
                   </motion.button>
                 )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Logout Confirmation Modal */}
+      <AnimatePresence>
+        {showLogoutConfirm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative p-6 rounded-2xl w-full max-w-md bg-white"
+            >
+              <h2 className="text-xl font-bold mb-4">Confirm Logout</h2>
+              <p className="mb-6 text-gray-600">Are you sure you want to logout?</p>
+              
+              <div className="flex justify-end space-x-4">
+                <motion.button
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={handleCancelLogout}
+                  className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300"
+                >
+                  Cancel
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={handleLogout}
+                  className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white"
+                >
+                  Logout
+                </motion.button>
               </div>
             </motion.div>
           </motion.div>
@@ -524,7 +571,7 @@ const ProfilePage = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             className="flex items-center px-6 py-3 rounded-lg bg-red-500 hover:bg-red-600 text-white shadow-md"
-            onClick={handleLogout}
+            onClick={handleLogoutClick}
           >
             <FiLogOut className="mr-2" /> Logout
           </motion.button>
