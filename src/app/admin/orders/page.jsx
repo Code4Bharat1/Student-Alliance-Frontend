@@ -149,13 +149,13 @@ const StatusBadge = ({ status }) => {
           </span>
         </Link>
         <Link
-          href="/admin/dashboard"
+          href="/admin/customers"
           className="flex items-center px-4 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
         >
           Customers
         </Link>
         <Link
-          href="/admin/CustomersPage"
+          href="/admin/analytics"
           className="flex items-center px-4 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
         >
           Analytics
