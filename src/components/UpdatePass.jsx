@@ -39,10 +39,24 @@ const UpdatePass = () => {
 
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/api/auth/update-password", {
-        email,
-        password,
-      });
+      // 1. Get the customer by email
+      const res = await axios.get(
+        `http://localhost:5000/api/customers/email/${email}`
+      );
+      const customer = res.data;
+      if (!customer || !customer._id) {
+        setError("No user found with this email.");
+        setLoading(false);
+        return;
+      }
+
+      await axios.put(
+        `http://localhost:5000/api/customers/${customer._id}/password`,
+        {
+          password,
+        }
+      );
+
       setSuccess("Password updated successfully!");
       setTimeout(() => {
         router.push("/form");
