@@ -176,10 +176,12 @@ const AnalyticsDashboard = () => {
     return `₹${value.toLocaleString("en-IN")}`;
   };
 
-  // Prepare data for BarChart: all products with their quantity
-  const productsBarData = products.map((product) => ({
-    name: product.name,
-    quantity: product.quantity || 0,
+  // Prepare data for BarChart: group by category and sum quantities
+  const productsBarData = ALL_CATEGORIES.map((cat) => ({
+    category: cat,
+    quantity: products
+      .filter((product) => product.category === cat)
+      .reduce((sum, product) => sum + (product.quantity || 0), 0),
   }));
 
   return (
@@ -340,7 +342,7 @@ const AnalyticsDashboard = () => {
             <BarChart data={productsBarData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
-                dataKey="name"
+                dataKey="category"
                 interval={0}
                 angle={-30}
                 textAnchor="end"
