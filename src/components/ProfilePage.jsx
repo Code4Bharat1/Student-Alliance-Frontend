@@ -1,21 +1,30 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiUser, FiMail, FiSettings, FiLogOut, FiSun, FiMoon, FiActivity, FiCreditCard, FiUsers, FiCamera, FiX } from 'react-icons/fi';
-import Image from 'next/image';
-import { useDispatch } from 'react-redux';
-import { logout } from '../redux/slices/authSlice';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  FiUser,
+  FiMail,
+  FiSettings,
+  FiLogOut,
+  FiActivity,
+  FiCreditCard,
+  FiUsers,
+  FiCamera,
+  FiX,
+} from "react-icons/fi";
+import Image from "next/image";
+import { useDispatch } from "react-redux";
+import { logout } from "../redux/slices/authSlice";
+import { useRouter } from "next/navigation";
 
 const ProfilePage = () => {
-  const [darkMode, setDarkMode] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState("overview");
   const [isLoading, setIsLoading] = useState(true);
-  const [avatar, setAvatar] = useState('/placeholder-avatar.jpg');
+  const [avatar, setAvatar] = useState("/placeholder-avatar.jpg");
   const [showImageUpload, setShowImageUpload] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState('');
+  const [previewUrl, setPreviewUrl] = useState("");
   const fileInputRef = useRef(null);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -30,31 +39,27 @@ const ProfilePage = () => {
 
   // Mock data
   const adminData = {
-    name: 'Shubham Thakare',
-    email: 'shubham444@gmail.com',
-    role: 'Super Admin',
+    name: "Shubham Thakare",
+    email: "shubham444@gmail.com",
+    role: "Super Admin",
     // joinDate: 'Joined May 2022',
     stats: {
       totalUsers: 1243,
       activeProjects: 28,
-      revenue: '$48,290',
-      tasksCompleted: 89
+      revenue: "$48,290",
+      tasksCompleted: 89,
     },
     recentActivity: [
-      { id: 1, action: 'Updated security settings', time: '2 hours ago' },
-      { id: 2, action: 'Approved new user registration', time: '5 hours ago' },
-      { id: 3, action: 'Created new admin account', time: '1 day ago' },
-      { id: 4, action: 'Processed monthly report', time: '2 days ago' },
-    ]
-  };
-
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
+      { id: 1, action: "Updated security settings", time: "2 hours ago" },
+      { id: 2, action: "Approved new user registration", time: "5 hours ago" },
+      { id: 3, action: "Created new admin account", time: "1 day ago" },
+      { id: 4, action: "Processed monthly report", time: "2 days ago" },
+    ],
   };
 
   const handleLogout = () => {
     dispatch(logout());
-    router.push('/');
+    router.push("/");
   };
 
   const handleAvatarClick = () => {
@@ -66,7 +71,7 @@ const ProfilePage = () => {
     if (!file) return;
 
     setSelectedFile(file);
-    
+
     // Create preview URL
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -77,23 +82,23 @@ const ProfilePage = () => {
 
   const handleUpload = () => {
     if (!selectedFile) return;
-    
+
     // Here you would typically upload to your backend
     // For demo purposes, we'll just update the local state
     setAvatar(previewUrl);
     setShowImageUpload(false);
     setSelectedFile(null);
-    setPreviewUrl('');
+    setPreviewUrl("");
   };
 
   const fadeIn = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.5 } }
+    visible: { opacity: 1, transition: { duration: 0.5 } },
   };
 
   const slideUp = {
     hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: 0.5 } }
+    visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
   };
 
   const staggerContainer = {
@@ -101,9 +106,9 @@ const ProfilePage = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const staggerItem = {
@@ -112,40 +117,13 @@ const ProfilePage = () => {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.5
-      }
-    }
+        duration: 0.5,
+      },
+    },
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
-      {/* Loading Overlay */}
-      <AnimatePresence>
-        {isLoading && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70"
-          >
-            <motion.div
-              animate={{
-                scale: [1, 1.2, 1],
-                rotate: [0, 10, -10, 0],
-              }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                repeatType: "reverse",
-              }}
-              className="w-16 h-16 bg-blue-500 rounded-lg flex items-center justify-center"
-            >
-              <FiUser className="text-white text-2xl" />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       {/* Image Upload Modal */}
       <AnimatePresence>
         {showImageUpload && (
@@ -159,21 +137,21 @@ const ProfilePage = () => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className={`relative p-6 rounded-2xl w-full max-w-md ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
+              className="relative p-6 rounded-2xl w-full max-w-md bg-white"
             >
               <button
                 onClick={() => {
                   setShowImageUpload(false);
                   setSelectedFile(null);
-                  setPreviewUrl('');
+                  setPreviewUrl("");
                 }}
-                className={`absolute top-4 right-4 p-1 rounded-full ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}
+                className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100"
               >
                 <FiX className="text-xl" />
               </button>
 
               <h2 className="text-xl font-bold mb-4">Update Profile Picture</h2>
-              
+
               <div className="flex flex-col items-center">
                 {previewUrl ? (
                   <div className="relative w-32 h-32 rounded-full overflow-hidden mb-4 border-2 border-blue-500">
@@ -202,9 +180,9 @@ const ProfilePage = () => {
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => fileInputRef.current.click()}
-                  className={`px-4 py-2 rounded-lg mb-4 ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'}`}
+                  className="px-4 py-2 rounded-lg mb-4 bg-gray-100 hover:bg-gray-200"
                 >
-                  {selectedFile ? 'Change Image' : 'Select Image'}
+                  {selectedFile ? "Change Image" : "Select Image"}
                 </motion.button>
 
                 {selectedFile && (
@@ -232,14 +210,6 @@ const ProfilePage = () => {
           className="flex justify-between items-center mb-8"
         >
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={toggleDarkMode}
-            className={`p-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}
-          >
-            {darkMode ? <FiSun className="text-yellow-300" /> : <FiMoon className="text-gray-600" />}
-          </motion.button>
         </motion.header>
 
         {/* Profile Section */}
@@ -247,7 +217,7 @@ const ProfilePage = () => {
           initial="hidden"
           animate="visible"
           variants={slideUp}
-          className={`rounded-2xl p-6 mb-8 shadow-lg ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
+          className="rounded-2xl p-6 mb-8 shadow-lg bg-white"
         >
           <div className="flex flex-col md:flex-row items-center">
             <motion.div
@@ -268,40 +238,22 @@ const ProfilePage = () => {
             </motion.div>
 
             <div className="text-center md:text-left">
-              <motion.h2 
+              <motion.h2
                 initial={{ x: -20 }}
                 animate={{ x: 0 }}
                 className="text-2xl font-bold mb-1"
               >
                 {adminData.name}
               </motion.h2>
-              <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm mb-2 ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
+              <div className="inline-flex items-center px-3 py-1 rounded-full text-sm mb-2 bg-gray-100">
                 <span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
                 {adminData.role}
               </div>
-              <p className={`mb-4 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{adminData.joinDate}</p>
-              
-              <div className="flex justify-center md:justify-start space-x-4">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center px-4 py-2 rounded-lg bg-blue-500 text-white"
-                >
-                  <FiMail className="mr-2" /> Message
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`flex items-center px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}
-                >
-                  <FiSettings className="mr-2" /> Settings
-                </motion.button>
-              </div>
+              <p className="mb-4 text-gray-600">{adminData.joinDate}</p>
             </div>
           </div>
         </motion.section>
 
-        {/* Rest of your existing code remains the same */}
         {/* Stats Section */}
         <motion.section
           initial="hidden"
@@ -310,21 +262,45 @@ const ProfilePage = () => {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
         >
           {[
-            { icon: <FiUsers size={24} />, title: 'Total Users', value: adminData.stats.totalUsers, color: 'bg-blue-500' },
-            { icon: <FiActivity size={24} />, title: 'Active Projects', value: adminData.stats.activeProjects, color: 'bg-green-500' },
-            { icon: <FiCreditCard size={24} />, title: 'Revenue', value: adminData.stats.revenue, color: 'bg-purple-500' },
-            { icon: <FiUser size={24} />, title: 'Tasks Completed', value: adminData.stats.tasksCompleted, color: 'bg-yellow-500' },
+            {
+              icon: <FiUsers size={24} />,
+              title: "Total Users",
+              value: adminData.stats.totalUsers,
+              color: "bg-blue-500",
+            },
+            {
+              icon: <FiActivity size={24} />,
+              title: "Delivered Products",
+              value: adminData.stats.activeProjects,
+              color: "bg-green-500",
+            },
+            {
+              icon: <FiCreditCard size={24} />,
+              title: "Revenue",
+              value: adminData.stats.revenue,
+              color: "bg-purple-500",
+            },
+            {
+              icon: <FiUser size={24} />,
+              title: "Canceled Products",
+              value: adminData.stats.tasksCompleted,
+              color: "bg-yellow-500",
+            },
           ].map((stat, index) => (
             <motion.div
               key={index}
               variants={staggerItem}
               whileHover={{ y: -5 }}
-              className={`rounded-xl p-6 shadow-md ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
+              className="rounded-xl p-6 shadow-md bg-white"
             >
-              <div className={`w-12 h-12 ${stat.color} rounded-full flex items-center justify-center text-white mb-4`}>
+              <div
+                className={`w-12 h-12 ${stat.color} rounded-full flex items-center justify-center text-white mb-4`}
+              >
                 {stat.icon}
               </div>
-              <h3 className={`text-sm font-medium mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{stat.title}</h3>
+              <h3 className="text-sm font-medium mb-1 text-gray-600">
+                {stat.title}
+              </h3>
               <p className="text-2xl font-bold">{stat.value}</p>
             </motion.div>
           ))}
@@ -335,22 +311,19 @@ const ProfilePage = () => {
           initial="hidden"
           animate="visible"
           variants={fadeIn}
-          className={`rounded-2xl p-1 mb-8 ${darkMode ? 'bg-gray-800' : 'bg-gray-100'}`}
+          className="rounded-2xl p-1 mb-8 bg-gray-100"
         >
           <div className="flex space-x-1">
-            {['overview', 'activity', 'settings'].map((tab) => (
+            {["overview", "activity", "settings"].map((tab) => (
               <motion.button
                 key={tab}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setActiveTab(tab)}
-                className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium capitalize transition-colors ${activeTab === tab 
-                  ? darkMode 
-                    ? 'bg-gray-700 text-white shadow' 
-                    : 'bg-white text-gray-900 shadow' 
-                  : darkMode 
-                    ? 'text-gray-400 hover:text-white' 
-                    : 'text-gray-600 hover:text-gray-900'
+                className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium capitalize transition-colors ${
+                  activeTab === tab
+                    ? "bg-white text-gray-900 shadow"
+                    : "text-gray-600 hover:text-gray-900"
                 }`}
               >
                 {tab}
@@ -365,26 +338,34 @@ const ProfilePage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className={`rounded-2xl p-6 shadow-lg ${darkMode ? 'bg-gray-800' : 'bg-white'} mb-8`}
+          className="rounded-2xl p-6 shadow-lg bg-white mb-8"
         >
-          {activeTab === 'overview' && (
+          {activeTab === "overview" && (
             <div>
               <h2 className="text-xl font-bold mb-6">Overview</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Recent Notifications</h3>
+                  <h3 className="text-lg font-semibold mb-4">
+                    Recent Notifications
+                  </h3>
                   <div className="space-y-4">
                     {[1, 2, 3].map((item) => (
                       <motion.div
                         key={item}
                         whileHover={{ x: 5 }}
-                        className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}
+                        className="p-4 rounded-lg bg-gray-50"
                       >
                         <div className="flex items-start">
-                          <div className={`w-3 h-3 rounded-full mt-1 mr-3 ${item === 1 ? 'bg-blue-500' : 'bg-gray-500'}`}></div>
+                          <div
+                            className={`w-3 h-3 rounded-full mt-1 mr-3 ${
+                              item === 1 ? "bg-blue-500" : "bg-gray-500"
+                            }`}
+                          ></div>
                           <div>
-                            <p className="font-medium">System update available</p>
-                            <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>2 hours ago</p>
+                            <p className="font-medium">
+                              System update available
+                            </p>
+                            <p className="text-sm text-gray-600">2 hours ago</p>
                           </div>
                         </div>
                       </motion.div>
@@ -393,20 +374,25 @@ const ProfilePage = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     {[
-                      { icon: <FiUser />, label: 'Add User' },
-                      { icon: <FiSettings />, label: 'Settings' },
-                      { icon: <FiActivity />, label: 'Reports' },
-                      { icon: <FiCreditCard />, label: 'Billing' }
+                      { icon: <FiSettings />, label: "Settings" },
+                      { icon: <FiCreditCard />, label: "Reports" },
                     ].map((action, index) => (
                       <motion.button
                         key={index}
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.97 }}
-                        className={`flex flex-col items-center justify-center p-4 rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'}`}
+                        onClick={() => {
+                          if (action.label === "Settings") {
+                            setActiveTab("settings");
+                          } else if (action.label === "Reports") {
+                            router.push("/admin/analytics");
+                          }
+                        }}
+                        className="flex flex-col items-center justify-center p-4 rounded-lg bg-gray-100 hover:bg-gray-200"
                       >
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 ${darkMode ? 'bg-gray-600' : 'bg-white'}`}>
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center mb-2 bg-white">
                           {action.icon}
                         </div>
                         <span className="text-sm">{action.label}</span>
@@ -418,7 +404,7 @@ const ProfilePage = () => {
             </div>
           )}
 
-          {activeTab === 'activity' && (
+          {activeTab === "activity" && (
             <div>
               <h2 className="text-xl font-bold mb-6">Recent Activity</h2>
               <div className="space-y-4">
@@ -428,11 +414,13 @@ const ProfilePage = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.3 }}
-                    className={`p-4 rounded-lg border-l-4 border-blue-500 ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}
+                    className="p-4 rounded-lg border-l-4 border-blue-500 bg-gray-50"
                   >
                     <div className="flex justify-between items-center">
                       <p className="font-medium">{activity.action}</p>
-                      <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{activity.time}</span>
+                      <span className="text-sm text-gray-600">
+                        {activity.time}
+                      </span>
                     </div>
                   </motion.div>
                 ))}
@@ -440,28 +428,32 @@ const ProfilePage = () => {
             </div>
           )}
 
-          {activeTab === 'settings' && (
+          {activeTab === "settings" && (
             <div>
               <h2 className="text-xl font-bold mb-6">Account Settings</h2>
               <div className="space-y-6">
                 <div>
                   <h3 className="font-medium mb-2">Profile Information</h3>
-                  <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
+                  <div className="p-4 rounded-lg bg-gray-50">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div>
-                        <label className={`block text-sm mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Full Name</label>
+                        <label className="block text-sm mb-1 text-gray-600">
+                          Full Name
+                        </label>
                         <input
                           type="text"
                           defaultValue={adminData.name}
-                          className={`w-full px-3 py-2 rounded-md border ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-300'}`}
+                          className="w-full px-3 py-2 rounded-md border bg-white border-gray-300"
                         />
                       </div>
                       <div>
-                        <label className={`block text-sm mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Email</label>
+                        <label className="block text-sm mb-1 text-gray-600">
+                          Email
+                        </label>
                         <input
                           type="email"
                           defaultValue={adminData.email}
-                          className={`w-full px-3 py-2 rounded-md border ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-300'}`}
+                          className="w-full px-3 py-2 rounded-md border bg-white border-gray-300"
                         />
                       </div>
                     </div>
@@ -477,27 +469,33 @@ const ProfilePage = () => {
 
                 <div>
                   <h3 className="font-medium mb-2">Security</h3>
-                  <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
+                  <div className="p-4 rounded-lg bg-gray-50">
                     <div className="mb-4">
-                      <label className={`block text-sm mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Current Password</label>
+                      <label className="block text-sm mb-1 text-gray-600">
+                        Current Password
+                      </label>
                       <input
                         type="password"
-                        className={`w-full px-3 py-2 rounded-md border ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-300'}`}
+                        className="w-full px-3 py-2 rounded-md border bg-white border-gray-300"
                       />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div>
-                        <label className={`block text-sm mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>New Password</label>
+                        <label className="block text-sm mb-1 text-gray-600">
+                          New Password
+                        </label>
                         <input
                           type="password"
-                          className={`w-full px-3 py-2 rounded-md border ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-300'}`}
+                          className="w-full px-3 py-2 rounded-md border bg-white border-gray-300"
                         />
                       </div>
                       <div>
-                        <label className={`block text-sm mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Confirm Password</label>
+                        <label className="block text-sm mb-1 text-gray-600">
+                          Confirm Password
+                        </label>
                         <input
                           type="password"
-                          className={`w-full px-3 py-2 rounded-md border ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-300'}`}
+                          className="w-full px-3 py-2 rounded-md border bg-white border-gray-300"
                         />
                       </div>
                     </div>
@@ -525,7 +523,7 @@ const ProfilePage = () => {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className={`flex items-center px-6 py-3 rounded-lg ${darkMode ? 'bg-red-600 hover:bg-red-700' : 'bg-red-500 hover:bg-red-600'} text-white shadow-md`}
+            className="flex items-center px-6 py-3 rounded-lg bg-red-500 hover:bg-red-600 text-white shadow-md"
             onClick={handleLogout}
           >
             <FiLogOut className="mr-2" /> Logout
