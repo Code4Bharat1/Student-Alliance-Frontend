@@ -23,34 +23,6 @@ export default function Header({ onAddProduct }) {
 
         {/* Right Section - Actions */}
         <div className="flex items-center gap-4 md:gap-6">
-          {/* Search Bar */}
-          <motion.div
-            className={`relative text-black flex items-center transition-all duration-300 ${
-              isSearchOpen ? "w-60" : "w-10"
-            }`}
-            animate={{
-              width: isSearchOpen ? 240 : 40,
-            }}
-            transition={{ type: "spring", damping: 20 }}
-          >
-            <input
-              type="text"
-              placeholder="Search products..."
-              className={`transition-all duration-300 ease-in-out h-10 pl-4 pr-10 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm ${
-                isSearchOpen ? "opacity-100 w-full" : "opacity-0 w-0"
-              }`}
-            />
-            <button
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className={`absolute right-1 top-1/2 -translate-y-1/2 p-2 rounded-full ${
-                isSearchOpen
-                  ? "bg-blue-100 text-blue-600"
-                  : "hover:bg-gray-100 text-gray-600"
-              }`}
-            >
-              <MagnifyingGlassIcon className="h-5 w-5" />
-            </button>
-          </motion.div>
 
           {/* Add Product Button */}
           <motion.button
