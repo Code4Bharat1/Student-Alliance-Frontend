@@ -498,7 +498,6 @@ const OrdersPage = () => {
                                 }
                                 className="mr-2 text-yellow-600 hover:text-yellow-900"
                               >
-                                Edit
                               </button>
                             )}
                           <button

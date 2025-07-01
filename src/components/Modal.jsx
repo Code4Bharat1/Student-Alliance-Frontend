@@ -111,10 +111,10 @@ export default function Modal({ product, onClose, onSave }) {
       return;
     }
 
-    if (!formData.name || !formData.price || !formData.image || !formData.category) {
-      toast.error("Please fill in all required fields: name, price, image, and category.");
-      return;
-    }
+    // if (!formData.name || !formData.price || !formData.image || !formData.category) {
+    //   toast.error("Please fill in all required fields: name, price, image, and category.");
+    //   return;
+    // }
 
     const payload = {
       ...formData,
@@ -197,7 +197,7 @@ export default function Modal({ product, onClose, onSave }) {
           {/* Product Price */}
           <div>
             <label className="block text-gray-700 font-medium mb-1">
-              Product Price *
+              Product Price 
             </label>
             <input
               type="number"
@@ -206,7 +206,6 @@ export default function Modal({ product, onClose, onSave }) {
               value={formData.price}
               onChange={handleChange}
               className="w-full border border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2 transition"
-              required
             />
           </div>
 

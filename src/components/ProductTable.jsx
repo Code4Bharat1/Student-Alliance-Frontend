@@ -242,9 +242,13 @@ export default function ProductTable({ onEdit }) {
                         router.push(`/admin/ProductDetails/${product._id}`);
                       }}
                     >
-                      <span className="px-3 py-1 inline-flex text-sm font-semibold rounded-full bg-green-100 text-green-800">
-                        ₹{product.price.toLocaleString()}
-                      </span>
+                      {product.price !== 0 ? (
+                        <span className="px-3 py-1 inline-flex text-sm font-semibold rounded-full bg-green-100 text-green-800">
+                          ₹{product.price.toLocaleString()}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400 italic">—</span>
+                      )}
                     </td>
                     <td
                       className="px-6 py-4 text-black"
