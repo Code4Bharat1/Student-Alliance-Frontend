@@ -15,7 +15,7 @@ export default function ProductTable({ onEdit }) {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
-  const [searchTerm, setSearchTerm] = useState(""); // <-- Add this line
+  const [searchTerm, setSearchTerm] = useState("");
 
   const router = useRouter();
 
@@ -24,7 +24,16 @@ export default function ProductTable({ onEdit }) {
       setIsLoading(true);
       try {
         const res = await axios.get("http://localhost:5000/api/products");
-        setProducts(res.data);
+        // Validate and normalize product data
+        const validatedProducts = res.data.map(product => ({
+          ...product,
+          name: product.name || "Unnamed Product",
+          price: product.price ?? 0,
+          quantity: product.quantity ?? 0,
+          category: product.category || "Uncategorized",
+          image: product.image || "/placeholder-product.jpg"
+        }));
+        setProducts(validatedProducts);
         if (!res.data || res.data.length === 0) {
           console.warn("No products found in the database.");
         }
@@ -208,41 +217,33 @@ export default function ProductTable({ onEdit }) {
                   >
                     <td
                       className="px-6 py-4"
-                      onClick={() => {
-                        console.log("Row clicked:", product);
-                        router.push(`/admin/ProductDetails/${product._id}`);
-                      }}
+                      onClick={() => router.push(`/admin/ProductDetails/${product._id}`)}
                     >
                       <img
                         className="h-12 w-12 rounded-lg object-cover shadow-sm border border-gray-200"
-                        src={product.image || "/placeholder-product.jpg"}
+                        src={product.image}
                         alt={product.name}
+                        onError={(e) => {
+                          e.target.src = "/placeholder-product.jpg";
+                        }}
                       />
                     </td>
                     <td
                       className="px-6 py-4"
-                      onClick={() => {
-                        console.log("Row clicked:", product);
-                        router.push(`/admin/ProductDetails/${product._id}`);
-                      }}
+                      onClick={() => router.push(`/admin/ProductDetails/${product._id}`)}
                     >
                       <div className="text-sm font-medium text-gray-900">
                         {product.name}
                       </div>
-                      {product.category && (
-                        <div className="text-xs text-gray-500 mt-1">
-                          {product.category}
-                        </div>
-                      )}
+                      <div className="text-xs text-gray-500 mt-1">
+                        {product.category}
+                      </div>
                     </td>
                     <td
                       className="px-6 py-4"
-                      onClick={() => {
-                        console.log("Row clicked:", product);
-                        router.push(`/admin/ProductDetails/${product._id}`);
-                      }}
+                      onClick={() => router.push(`/admin/ProductDetails/${product._id}`)}
                     >
-                      {product.price !== 0 ? (
+                      {product.price > 0 ? (
                         <span className="px-3 py-1 inline-flex text-sm font-semibold rounded-full bg-green-100 text-green-800">
                           ₹{product.price.toLocaleString()}
                         </span>
@@ -252,10 +253,7 @@ export default function ProductTable({ onEdit }) {
                     </td>
                     <td
                       className="px-6 py-4 text-black"
-                      onClick={() => {
-                        console.log("Row clicked:", product);
-                        router.push(`/admin/ProductDetails/${product._id}`);
-                      }}
+                      onClick={() => router.push(`/admin/ProductDetails/${product._id}`)}
                     >
                       {product.quantity.toLocaleString()}
                     </td>
@@ -264,7 +262,10 @@ export default function ProductTable({ onEdit }) {
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.95 }}
-                          onClick={() => onEdit(product)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onEdit(product);
+                          }}
                           className="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-blue-100"
                           title="Edit product"
                         >
@@ -273,7 +274,10 @@ export default function ProductTable({ onEdit }) {
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.95 }}
-                          onClick={() => handleDeleteClick(product._id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteClick(product._id);
+                          }}
                           className="text-red-600 hover:text-red-800 p-2 rounded-full hover:bg-red-100"
                           title="Delete product"
                         >
