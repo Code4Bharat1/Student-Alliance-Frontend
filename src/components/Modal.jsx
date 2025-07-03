@@ -17,7 +17,7 @@ export default function Modal({ product, onClose, onSave }) {
     stocks: 0,
     features: [],
     additionalImages: ["", "", ""],
-    ...(product || {}) // Spread product props if they exist
+    ...(product || {}), // Spread product props if they exist
   });
 
   // Ensure arrays are properly initialized
@@ -40,7 +40,6 @@ export default function Modal({ product, onClose, onSave }) {
 
     const formDataUpload = new FormData();
     formDataUpload.append("file", file);
-    formDataUpload.append("upload_preset", "Student-Alliance");
 
     if (index !== null) {
       setUploadingIndex(index);
@@ -49,48 +48,45 @@ export default function Modal({ product, onClose, onSave }) {
     }
 
     try {
-      const res = await fetch(
-        "https://api.cloudinary.com/v1_1/dlgksnq6u/image/upload",
-        {
-          method: "POST",
-          body: formDataUpload,
-        }
-      );
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
+        method: "POST",
+        body: formDataUpload,
+      });
 
       const data = await res.json();
-      if (data.secure_url) {
+
+      if (data.fileUrl) {
         if (index !== null) {
           const updatedImages = [...formData.additionalImages];
-          updatedImages[index] = data.secure_url;
-          setFormData(prev => ({
+          updatedImages[index] = data.fileUrl;
+          setFormData((prev) => ({
             ...prev,
-            additionalImages: updatedImages
+            additionalImages: updatedImages,
           }));
         } else {
           setFormData((prev) => ({
             ...prev,
-            image: data.secure_url,
-            imagePublicId: data.public_id,
+            image: data.fileUrl,
+            wasabiKey: data.wasabiKey,
           }));
         }
       }
-      return data.secure_url;
     } catch (error) {
       console.error("Image upload failed:", error);
     } finally {
-      if (index !== null) {
-        setUploadingIndex(null);
-      } else {
-        setUploading(false);
-      }
+      setUploading(false);
+      setUploadingIndex(null);
     }
   };
 
   const addFeature = () => {
-    if (currentFeature.trim() && !formData.features.includes(currentFeature.trim())) {
-      setFormData(prev => ({
+    if (
+      currentFeature.trim() &&
+      !formData.features.includes(currentFeature.trim())
+    ) {
+      setFormData((prev) => ({
         ...prev,
-        features: [...prev.features, currentFeature.trim()]
+        features: [...prev.features, currentFeature.trim()],
       }));
       setCurrentFeature("");
     }
@@ -99,9 +95,9 @@ export default function Modal({ product, onClose, onSave }) {
   const removeFeature = (index) => {
     const updatedFeatures = [...formData.features];
     updatedFeatures.splice(index, 1);
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      features: updatedFeatures
+      features: updatedFeatures,
     }));
   };
 
@@ -123,7 +119,7 @@ export default function Modal({ product, onClose, onSave }) {
       quantity: Number(formData.quantity),
       discount: Number(formData.discount),
       stocks: Number(formData.stocks),
-      imagePublicId: formData.imagePublicId
+      imagePublicId: formData.imagePublicId,
     };
 
     console.log("Submitting payload:", payload);
@@ -160,10 +156,6 @@ export default function Modal({ product, onClose, onSave }) {
       setSaving(false);
     }
   };
-  
-  
-  
-  
 
   return (
     <div className="fixed inset-0 border-gray-700 text-black bg-gradient-to-r from-blue-200 to-pink-200 bg-opacity-80 flex items-center justify-center z-50">
@@ -197,7 +189,7 @@ export default function Modal({ product, onClose, onSave }) {
           {/* Product Price */}
           <div>
             <label className="block text-gray-700 font-medium mb-1">
-              Product Price 
+              Product Price
             </label>
             <input
               type="number"
@@ -224,34 +216,33 @@ export default function Modal({ product, onClose, onSave }) {
             ></textarea>
           </div>
 
-          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Product Category */}
-<div>
-  <label className="block text-gray-700 font-medium mb-1">
-    Product Category *
-  </label>
-  <select
-    name="category"
-    value={formData.category || ""}
-    onChange={handleChange}
-    className="w-full border border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2 transition"
-    required
-  >
-    <option value="">Select a category</option>
-    <option value="Camera">Camera</option>
-    <option value="Digital Board">Digital Board</option>
-    <option value="Mic">Mic</option>
-    <option value="Cable">Cable</option>
-    <option value="Speaker">Speaker</option>
-    <option value="Light">Light</option>
-    <option value="Stand">Stand</option>
-    <option value="OPS">OPS</option>
-    <option value="IFPD">IFPD</option>
-    <option value="3D Printers">3D Printers</option>
-    <option value="STEM & Robotics">STEM & Robotics</option>
-  </select>
-</div>
+            <div>
+              <label className="block text-gray-700 font-medium mb-1">
+                Product Category *
+              </label>
+              <select
+                name="category"
+                value={formData.category || ""}
+                onChange={handleChange}
+                className="w-full border border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2 transition"
+                required
+              >
+                <option value="">Select a category</option>
+                <option value="Camera">Camera</option>
+                <option value="Digital Board">Digital Board</option>
+                <option value="Mic">Mic</option>
+                <option value="Cable">Cable</option>
+                <option value="Speaker">Speaker</option>
+                <option value="Light">Light</option>
+                <option value="Stand">Stand</option>
+                <option value="OPS">OPS</option>
+                <option value="IFPD">IFPD</option>
+                <option value="3D Printers">3D Printers</option>
+                <option value="STEM & Robotics">STEM & Robotics</option>
+              </select>
+            </div>
 
             {/* Quantity */}
             <div>
@@ -300,7 +291,7 @@ export default function Modal({ product, onClose, onSave }) {
                 onChange={handleChange}
                 className="w-full border border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2 transition"
               />
-            </div> 
+            </div>
           </div>
 
           {/* Features */}
@@ -326,7 +317,10 @@ export default function Modal({ product, onClose, onSave }) {
             </div>
             <div className="flex flex-wrap gap-2">
               {(formData.features || []).map((feature, index) => (
-                <div key={index} className="flex items-center bg-gray-100 px-3 py-1 rounded-full">
+                <div
+                  key={index}
+                  className="flex items-center bg-gray-100 px-3 py-1 rounded-full"
+                >
                   <span>{feature}</span>
                   <button
                     type="button"
@@ -373,7 +367,10 @@ export default function Modal({ product, onClose, onSave }) {
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {(formData.additionalImages || []).map((img, index) => (
-                <div key={index} className="border border-dashed border-gray-300 rounded-lg p-4 text-center relative hover:shadow-md transition">
+                <div
+                  key={index}
+                  className="border border-dashed border-gray-300 rounded-lg p-4 text-center relative hover:shadow-md transition"
+                >
                   <input
                     type="file"
                     accept="image/*"
@@ -410,7 +407,9 @@ export default function Modal({ product, onClose, onSave }) {
             onClick={handleSubmit}
             disabled={uploading || saving || uploadingIndex !== null}
           >
-            {uploading || saving || uploadingIndex !== null ? "Saving..." : "Save"}
+            {uploading || saving || uploadingIndex !== null
+              ? "Saving..."
+              : "Save"}
           </button>
         </div>
       </motion.div>
